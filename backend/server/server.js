@@ -12,14 +12,3 @@ dbHelper.databaseConnect((err)=>{
 //routes(app);
 
 app.listen(port, () => console.log('Server running on port: ' + port))
-
-
-/*var http = require('http');
-
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end('Hello World!');
-}).listen(8080)
-
-console.log('Server running on localhost:8080')
-*/
