@@ -8,4 +8,6 @@ The aim of the project is to build a website that allows a person to register an
 
 Node.js will be used to create the server backend and MySQL will be used for persistent data storage. These choices were made based on the fact that I have used both of them in the past but not having had the chance to learn them to the extent I would like to. They also both seem suitable for the project since I don't see any limitations in Node or MySQL that would affect this particular project negatively. The server will expose a REST API using routes in the Express framework that can be easily used in Node.
 
+To easily be able to search and access a vast library of movies, I will use the OMDb API: http://www.omdbapi.com/
+
 The front-end will be made using React. The reason I am choosing React is because it is a very popular framework for front-end development and something I would very much like to learn more about. Its popularity also speaks to the fact that it is most likely a good framework for front-end development which makes me hopeful that it will be suitable for creating the page I want to create.
