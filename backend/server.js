@@ -4,7 +4,7 @@ const express = require('express');
 const app = express()
 const port = 8080
 
-dbHelper.databaseConnect((err)=>{ // Connect to database and log eventual errors
+dbHelper.databaseInit((err)=>{ // Initialize database
     if(err) console.log(err)
 });
 
