@@ -22,23 +22,36 @@ var collectiondbCon = mysql.createConnection({
     database: 'collectiondb'
 });
 
-exports.databaseConnect = (cb)=>{
+function executeQuery(sql, connection) {
+    connection.query(sql, function(err) {
+        if (err) {
+            //throw err;
+            console.log(err); // TODO - Figure out proper error handling
+            return false;
+        } else {
+            return true;
+        }
+    });
+}
+
+exports.databaseInit = (cb)=>{
     dbServerCon.connect(function(err) {
         if (err) {
             cb(err);
         } else {
             console.log('Connected to the database server');
-            dbServerCon.query('CREATE DATABASE IF NOT EXISTS userdb', function (err){
-                if (err) cb(err);
-
-            });
-            dbServerCon.query('CREATE DATABASE IF NOT EXISTS collectiondb', function (err){
-                if (err) cb(err);
-            });
+            
+            executeQuery('CREATE DATABASE IF NOT EXISTS userdb;', dbServerCon); // Create Databases if not previously created
+            executeQuery('CREATE DATABASE IF NOT EXISTS collectiondb;', dbServerCon);
+            
+            //Set up tables if they don't exist
+            executeQuery('CREATE TABLE IF NOT EXISTS users (user_id INT(11) NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, CONSTRAINT user_pk PRIMARY KEY (user_id));', userdbCon); 
+            //TODO - Set up collectiondb tables
+            
         }
     });
 }
 
-exports.createUser = (cb)=>{
-
+exports.createUser(username, password) = (cb)=>{
+    return executeQuery('INSERT INTO users (username, password) VALUES (\'' + username + '\', \'' + password + '\')', userdbCon)
 }
