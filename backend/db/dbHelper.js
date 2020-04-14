@@ -15,6 +15,9 @@ exports.databaseConnect = (cb)=>{
             dbConnection.query('CREATE DATABASE IF NOT EXISTS userdb', function (err){
                 if (err) cb(err);
             })
+            dbConnection.query('CREATE DATABASE IF NOT EXISTS collectiondb', function (err){
+                if (err) cb(err);
+            })
         }
     });
 }
