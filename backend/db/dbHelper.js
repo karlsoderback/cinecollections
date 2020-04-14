@@ -12,9 +12,8 @@ exports.databaseConnect = (cb)=>{
             cb(err);
         } else {
             console.log('Connected to the database!');
-            dbConnection.query('CREATE DATABASE userdb', function (err, result){
+            dbConnection.query('CREATE DATABASE IF NOT EXISTS userdb', function (err){
                 if (err) cb(err);
-                console.log('Created UserDB');
             })
         }
     });
