@@ -1,23 +1,44 @@
 var mysql = require('mysql')
 
-var dbConnection = mysql.createConnection({
+// TODO - Move all database conf to separate config instead of hardcoding it
+
+var dbServerCon = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'admin' // TODO - Move credentails to config instead of hardcoding them
+    password: 'admin' 
+});
+
+var userdbCon = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'userdb'
+});
+
+var collectiondbCon = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'collectiondb'
 });
 
 exports.databaseConnect = (cb)=>{
-    dbConnection.connect(function(err) {
+    dbServerCon.connect(function(err) {
         if (err) {
             cb(err);
         } else {
-            console.log('Connected to the database!');
-            dbConnection.query('CREATE DATABASE IF NOT EXISTS userdb', function (err){
+            console.log('Connected to the database server');
+            dbServerCon.query('CREATE DATABASE IF NOT EXISTS userdb', function (err){
                 if (err) cb(err);
-            })
-            dbConnection.query('CREATE DATABASE IF NOT EXISTS collectiondb', function (err){
+
+            });
+            dbServerCon.query('CREATE DATABASE IF NOT EXISTS collectiondb', function (err){
                 if (err) cb(err);
-            })
+            });
         }
     });
+}
+
+exports.createUser = (cb)=>{
+
 }
