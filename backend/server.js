@@ -8,7 +8,11 @@ dbHelper.databaseInit((err)=>{ // Initialize database
     if(err) console.log(err)
 });
 
-var routes = require('./modules/routes.js') //Register routes for the app
+app.use(express.json()); //Setup request body parsing
+app.use(express.urlencoded()); 
+app.use(express.json());
+
+var routes = require('./rest/routes.js') //Register routes for the app
 routes(app);
 
 app.listen(port, () => console.log('Server running on port: ' + port)) // Start web server and log that it is running

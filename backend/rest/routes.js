@@ -1,6 +1,6 @@
 module.exports = function(app) {
-    var defaultController  = require('../controllers/defaultController.js')
-    var registerController  = require('../controllers/registerController.js')
+    var defaultController  = require('./defaultController.js')
+    var registerController  = require('./registerController.js')
     /**
      * Default endpoint
      */

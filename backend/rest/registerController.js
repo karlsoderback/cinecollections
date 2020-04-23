@@ -3,9 +3,11 @@ const response = require('../modules/response.js')
 
 
 exports.post = async function(req, res) {
-    if(dbHelper.createUser(req.body.name, req.body.password)) {
+    console.log("DET KANSKE SKITER SIG HÄR")
+    console.log(req.body.username)
+    /*if(dbHelper.createUser(req.body.username, req.body.password)) {
         response.createSuccessResponse(res);
     } else {
         response.createFailResponse(res);
-    }
+    }*/
 }

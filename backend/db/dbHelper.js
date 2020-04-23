@@ -52,6 +52,6 @@ exports.databaseInit = (cb)=>{
     });
 }
 
-exports.createUser(username, password) = (cb)=>{
+exports.createUser = (cb, username, password)=>{
     return executeQuery('INSERT INTO users (username, password) VALUES (\'' + username + '\', \'' + password + '\')', userdbCon)
 }
