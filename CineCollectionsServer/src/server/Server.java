@@ -19,5 +19,9 @@ public class Server {
         }
 
         app.get("/", ctx -> ctx.result("Hello World"));
+
+        app.post("/newuser", ctx -> {
+
+        });
     }
 }
