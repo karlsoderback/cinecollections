@@ -6,7 +6,7 @@ The aim of the project is to build a website that allows a person to register an
 
 # Technical Specification
 
-Node.js will be used to create the server backend and MySQL will be used for persistent data storage. These choices were made based on the fact that I have used both of them in the past but not having had the chance to learn them to the extent I would like to. They also both seem suitable for the project since I don't see any limitations in Node or MySQL that would affect this particular project negatively. The server will expose a REST API using routes in the Express framework that can be easily used in Node.
+To create a web server that hosts a REST API, I will use the Javalin framework. Thus, the server will be written in Java. The database will be hosted on a PostgreSQL server and the PostgreSQL jdbc connector will be the interface between the web server and the database. I have chosen this approach since Javalin seems like a simple but robust framework for creating a web server with a REST API. I chose PostgreSQL based on previous positive experiences with this particular database.
 
 To easily be able to search and access a vast library of movies, I will use the OMDb API: http://www.omdbapi.com/
 
