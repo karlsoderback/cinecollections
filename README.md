@@ -1,6 +1,6 @@
 # TDDD27_2020_karso527
 
-#CineCollections
+# CineCollections
 
 ## Functional Specification
 
