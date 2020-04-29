@@ -22,24 +22,32 @@ public class Server {
         }
 
         app.get("/", ctx -> ctx.status(200));
-
         app.post("/newuser", ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
             _dbManager.createNewUser(jsonObject.getString("username"), jsonObject.getString("password"));
             System.out.println("New user created");
         });
+        app.post("/login", ctx -> {
+            JSONObject jsonObject = new JSONObject(ctx.body());
+            String username = jsonObject.getString("username");
+            _dbManager.checkCredentials(username, jsonObject.getString("password"));
+            System.out.println("Succesfully logged in \"" + username + "\"");
+        });
 
+
+        app.exception(DbException.class, (e, ctx) -> {
+            System.err.println("A database error ocurred: " + e.getMessage()); // TODO - Set up proper responses with error/success codes
+            ctx.status(401);
+        });
         app.exception(NullPointerException.class, (e, ctx) -> {
-            System.err.println("The server encountered a NullPointerException: " + e.getMessage()
-                    + "\nStacktrace:\n" + Arrays.toString(e.getStackTrace()));
+            System.err.println("The server encountered a NullPointerException: " + e.getMessage() + "\nStacktrace:\n");
+            System.err.println(Arrays.toString(e.getStackTrace()));
+            ctx.status(404);
         });
         app.exception(Exception.class, (e, ctx) -> {
-            if(e.getMessage().contains("duplicate key")) {
-                System.out.println("User already exists"); // TODO - Set up proper responses with error/success codes
-            } else {
-                System.err.println("The server encountered an error: " + e.getMessage()
-                        + "\nStacktrace:\n" + Arrays.toString(e.getStackTrace()));
-            }
+            System.err.println("The server encountered an error: " + e.getMessage() + "\nStacktrace:\n");
+            System.err.println(Arrays.toString(e.getStackTrace()));
+            ctx.status(404);
         });
     }
 }

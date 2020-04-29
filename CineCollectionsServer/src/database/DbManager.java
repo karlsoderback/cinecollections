@@ -27,16 +27,16 @@ public class DbManager {
     private void executeUpdate(String sql, Connection connection) throws DbException {
         try {
             connection.createStatement().executeUpdate(sql);
-        } catch (SQLException throwables) {
-            throw new DbException("Failed to execute update: " + throwables.getMessage(), throwables);
+        } catch (SQLException e) {
+            throw new DbException("Failed to execute update: " + e.getMessage(), e);
         }
     }
 
     private ResultSet executeQuery(String sql, Connection connection) throws DbException {
         try {
             return connection.createStatement().executeQuery(sql);
-        } catch (SQLException throwables) {
-            throw new DbException("Failed to execute query: " + throwables.getMessage(), throwables);
+        } catch (SQLException e) {
+            throw new DbException("Failed to execute query: " + e.getMessage(), e);
         }
     }
 
@@ -45,8 +45,8 @@ public class DbManager {
             _serverConnection = initConnection("");
             System.out.println("Connected to SQL Server at localhost:5432");
             initializeDatabase();
-        } catch (SQLException throwables) {
-            throw new DbException("Failed to connect to database: " + throwables.getMessage(), throwables);
+        } catch (SQLException e) {
+            throw new DbException("Failed to connect to database: " + e.getMessage(), e);
         }
     }
 
@@ -80,8 +80,8 @@ public class DbManager {
             } else {
                 return false;
             }
-        } catch (SQLException throwables) {
-            throw new DbException("Failed to check if database \"" + dbname + "\" exists: " + throwables.getMessage());
+        } catch (SQLException e) {
+            throw new DbException("Failed to check if database \"" + dbname + "\" exists: " + e.getMessage());
         }
     }
 
@@ -90,13 +90,47 @@ public class DbManager {
         try {
             _dbConnection.close();
             _serverConnection.close();
-        } catch (SQLException throwables) {
-            throw new DbException("Failed to disconnect from database: " + throwables.getMessage(), throwables);
+        } catch (SQLException e) {
+            throw new DbException("Failed to disconnect from database: " + e.getMessage(), e);
         }
     }
 
     public void createNewUser(String username, String password) throws DbException {
+        if (userExists(username)) {
+            throw new DbException("A user with this username already exists!");
+        }
         executeUpdate("INSERT INTO users(username, password) VALUES (\'" + username + "\', \'" + password + "\');", _dbConnection);
-        System.out.println("User \"" + username + " added to database");
+        System.out.println("User \"" + username + "\" added to database");
+    }
+
+    private boolean userExists(String username) throws DbException {
+        ResultSet rs = executeQuery("SELECT EXISTS(SELECT 1 FROM users WHERE username = \'" + username + "\');", _dbConnection);
+        try {
+            if (rs.next()) {
+                return rs.getBoolean(1);
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new DbException("Failed to check if user exists: " + e.getMessage(), e);
+        }
+    }
+
+    public void checkCredentials(String username, String password) throws DbException {
+        if (userExists(username)) {
+            ResultSet rs = executeQuery("SELECT * FROM users WHERE username = \'" + username + "\';", _dbConnection);
+            try {
+                if (rs.next()) {
+                    if (!rs.getString(3).equals(password)) {
+                        throw new DbException("Incorrect credentials");
+                    }
+                }
+                rs.close();
+            } catch (SQLException e) {
+                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+            }
+        } else {
+            throw new DbException("Incorrect credentials");
+        }
     }
 }
