@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static io.javalin.apibuilder.ApiBuilder.*;
+
 public class Server {
 
     private final DbManager _dbManager = new DbManager();
@@ -34,11 +36,11 @@ public class Server {
         Handler generateToken = ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
             User user = new User(jsonObject.getString("username"), jsonObject.getString("password"));
-            _dbManager.checkCredentials(user.getUsername(), jsonObject.getString("password"));
+            _dbManager.checkCredentials(user.getUsername(), user.getPassword());
             String token = _auth.provider.generateToken(user);
 
-            String message = "Succesfully logged in \"" + user.getUsername() + "\"";
-            ctx.json(new JWTResponse(token)).status(200).result(message);
+            String message = "Succesfully created a session for \"" + user.getUsername() + "\"";
+            ctx.json(new JWTResponse(token));//.status(200).result(message);
             System.out.println(message);
         };
         Handler validateToken = ctx -> {
@@ -54,18 +56,31 @@ public class Server {
         /**
          * Routes
          */
-        app.get("/", ctx -> ctx.status(200));
+        /*app.get("/", ctx -> ctx.status(200));
         app.post("/newuser", ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
             _dbManager.createNewUser(jsonObject.getString("username"), jsonObject.getString("password"));
             System.out.println("New user created");
-        });
+        });*/
+        app.routes(() -> {
+            path("/", () -> {
+                get("", ctx -> {
+                    ctx.status(200).result("Hello World");
+                });
+                path("auth", () -> {
+                    get("", ctx -> ctx.result("auth"));
+                    post("/newsession", generateToken);
+                    get("/validatesession", validateToken);
+                });
+            });
+
+        });/*
         app.get("/auth", ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
             String username = jsonObject.getString("username");
             app.get("/newsession", generateToken);
             app.get("/validatesession", validateToken);
-        });
+        });*/
 
         /**
          * Exception handling
