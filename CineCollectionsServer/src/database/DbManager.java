@@ -1,6 +1,8 @@
 package database;
 
 import exception.DbException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.*;
 import java.util.Properties;
@@ -85,7 +87,6 @@ public class DbManager {
         }
     }
 
-
     public void disconnect() throws DbException {
         try {
             _dbConnection.close();
@@ -128,7 +129,7 @@ public class DbManager {
                 rs.close();
                 return true;
             } catch (SQLException e) {
-                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+                throw new DbException(e.getMessage(), e);
             }
         } else {
             throw new DbException("Incorrect credentials");
@@ -153,9 +154,43 @@ public class DbManager {
                     return true;
                 }
             } catch (SQLException e) {
-                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+                throw new DbException(e.getMessage(), e);
             }
         }
         return false;
+    }
+
+    public void createCollection(JSONObject collection) throws DbException {
+        String creator = collection.getString("username");
+        int creatorId = getUserId(creator);
+        String collection_name = collection.getJSONObject("collection").getString("collection_name");
+        JSONArray filmsJSON = collection.getJSONObject("collection").getJSONArray("films");
+        String[] films = new String[filmsJSON.length()];
+        for (int i = 0; i < filmsJSON.length(); i++) {
+            films[i] = String.valueOf(filmsJSON.get(i));
+        }
+
+        String sql = "INSERT INTO collections(creator, collection_name, films) VALUES (?, ?, ?)";
+        try {
+            PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+            pstmt.setInt(1, creatorId);
+            pstmt.setString(2, collection_name);
+            pstmt.setArray(3, _dbConnection.createArrayOf("text", films));
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage(), e);
+        }
+    }
+
+    private int getUserId(String username) throws DbException {
+        ResultSet rs = executeQuery("SELECT id FROM users WHERE username = \'" + username + "\'", _dbConnection);
+        try {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage(), e);
+        }
+        return -1;
     }
 }
