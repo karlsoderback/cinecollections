@@ -1,25 +1,23 @@
 package database;
 
 import exception.DbException;
-import org.json.JSONObject;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.Properties;
 
 public class DbManager {
     private Connection _serverConnection;
     private Connection _dbConnection;
-    Properties _credentials = new Properties();
+    Properties _dbCredentials = new Properties();
 
     public DbManager() {
-        _credentials.setProperty("user", "postgres");
-        _credentials.setProperty("password", "admin");
-        _credentials.setProperty("protocolVersion", "3");
+        _dbCredentials.setProperty("user", "postgres");
+        _dbCredentials.setProperty("password", "admin");
+        _dbCredentials.setProperty("protocolVersion", "3");
     }
 
     private Connection initConnection(String suffix) throws SQLException {
-        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + suffix, _credentials);
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + suffix, _dbCredentials);
         connection.setAutoCommit(true);
         return connection;
     }
@@ -58,14 +56,16 @@ public class DbManager {
 
         _dbConnection = initConnection("cinecollectionsdb");
         executeUpdate("CREATE TABLE IF NOT EXISTS users(" +
-                    "id SERIAL PRIMARY KEY," +
-                    "username VARCHAR (256) UNIQUE," +
-                    "password VARCHAR (256));", _dbConnection); // TODO - Hash passwords
+                "id SERIAL PRIMARY KEY," +
+                "username VARCHAR (256) UNIQUE," +
+                "password VARCHAR (256)," +
+                "token VARCHAR (256));", _dbConnection); // TODO - Hash passwords
         executeUpdate("CREATE TABLE IF NOT EXISTS collections(" +
-                    "collection_id SERIAL PRIMARY KEY," +
-                    "user_id INTEGER REFERENCES users(id)," +
-                    "collection_name VARCHAR (256)," +
-                    "films VARCHAR (256));", _dbConnection);
+                "collection_id SERIAL PRIMARY KEY," +
+                "creator INTEGER REFERENCES users(id)," +
+                "collection_name VARCHAR (256)," +
+                "films TEXT []," + // use titles or imdbIds
+                "subscribers INTEGER []);", _dbConnection); // userids
 
         System.out.println("Database Initialized");
     }
@@ -116,9 +116,9 @@ public class DbManager {
         }
     }
 
-    public void checkCredentials(String username, String password) throws DbException {
+    public boolean credentialsValid(String username, String password) throws DbException {
         if (userExists(username)) {
-            ResultSet rs = executeQuery("SELECT * FROM users WHERE username = \'" + username + "\';", _dbConnection);
+            ResultSet rs = executeQuery("SELECT * FROM users WHERE username = \'" + username + "\';", _dbConnection); //Select pw only?
             try {
                 if (rs.next()) {
                     if (!rs.getString(3).equals(password)) {
@@ -126,11 +126,36 @@ public class DbManager {
                     }
                 }
                 rs.close();
+                return true;
             } catch (SQLException e) {
                 throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
             }
         } else {
             throw new DbException("Incorrect credentials");
         }
+    }
+
+    public void setToken(String username, String token) throws DbException {
+        if (userExists(username)) {
+            executeUpdate("UPDATE users SET token = \'" + token + "\' WHERE username = \'" + username + "\';", _dbConnection);
+        }
+    }
+
+    public boolean isTokenValid(String username, String token) throws DbException {
+        if (userExists(username)) {
+            ResultSet rs = executeQuery("SELECT token from users WHERE username = \'" + username + "\';", _dbConnection);
+            try {
+                if (rs.next()) {
+                    if (!rs.getString(1).equals(token)) {
+                        return false;
+                    }
+                    rs.close();
+                    return true;
+                }
+            } catch (SQLException e) {
+                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+            }
+        }
+        return false;
     }
 }

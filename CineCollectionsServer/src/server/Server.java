@@ -36,20 +36,30 @@ public class Server {
         Handler generateToken = ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
             User user = new User(jsonObject.getString("username"), jsonObject.getString("password"));
-            _dbManager.checkCredentials(user.getUsername(), user.getPassword());
-            String token = _auth.provider.generateToken(user);
-
-            String message = "Succesfully created a session for \"" + user.getUsername() + "\"";
-            ctx.json(new JWTResponse(token));//.status(200).result(message);
-            System.out.println(message);
+            if (_dbManager.credentialsValid(user.getUsername(), user.getPassword())) {
+                String token = _auth.provider.generateToken(user);
+                _dbManager.setToken(user.getUsername(), token);
+                String message = "Succesfully created a session for \"" + user.getUsername() + "\"";
+                ctx.json(new JWTResponse(token));//.status(200).result(message);
+                System.out.println(message);
+            }
         };
         Handler validateToken = ctx -> {
             Optional<DecodedJWT> decodedJWT = JavalinJWT.getTokenFromHeader(ctx).flatMap(_auth.provider::validateToken);
+            String token = String.valueOf(JavalinJWT.getTokenFromHeader(ctx));
+            token = token.substring(9, token.length() - 1);
 
-            if(!decodedJWT.isPresent()) {
+
+            if (!decodedJWT.isPresent()) {
                 ctx.status(401).result("Missing or invalid token");
             } else {
-                ctx.result("Token is valid");
+                JSONObject jsonObject = new JSONObject(ctx.body());
+                String username = jsonObject.getString("username");
+                if (_dbManager.isTokenValid(username, token)) {
+                    ctx.result("Token is valid for user: " + username).status(200);
+                } else {
+                    ctx.result("Token is not valid for user: " + username).status(403);
+                }
             }
         };
 
@@ -61,6 +71,17 @@ public class Server {
                 get("", ctx -> {
                     ctx.status(200).result("Hello World");
                 });
+                post("/newuser", ctx -> {
+                    JSONObject jsonObject = new JSONObject(ctx.body());
+                    _dbManager.createNewUser(jsonObject.getString("username"), jsonObject.getString("password"));
+                    System.out.println("New user created");
+                });
+                /*post("/login", ctx -> {
+                    JSONObject jsonObject = new JSONObject(ctx.body());
+                    String username = jsonObject.getString("username");
+                    _dbManager.checkCredentials(username, jsonObject.getString("password"));
+                    System.out.println("Succesfully logged in \"" + username + "\"");
+                });*/
                 path("auth", () -> {
                     get("", ctx -> ctx.result("auth"));
                     post("/newsession", generateToken);
