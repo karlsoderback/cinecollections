@@ -71,14 +71,13 @@ public class Server {
                     System.out.println("Succesfully logged in \"" + username + "\"");
                 });*/ // TODO - Probably remove this post route
                 path("auth", () -> {
-                    get("", ctx -> ctx.result("auth"));
+                    get("", ctx -> ctx.result("auth")); // TODO - Delete?
                     post("/newsession", generateToken);
                     //get("/validatesession", validateToken);
                 });
                 path("collection", () -> {
                     post("/create", ctx -> {
                         JSONObject jsonObject = new JSONObject(ctx.body());
-
                         if (isRequestAuthorized(ctx)) {
                             int collectionId = _dbManager.createCollection(jsonObject);
                             ctx.result("Collection: \"" + jsonObject.getJSONObject("collection").getString("collection_name") + "\" was saved!")
@@ -89,8 +88,13 @@ public class Server {
                         }
                     });
                     get("/delete", ctx -> {
-
-                    })
+                        JSONObject jsonObject = new JSONObject(ctx.body());
+                        String collectionId = jsonObject.getString("collectionId");
+                        if (isRequestAuthorized(ctx)) {
+                            _dbManager.deleteCollection(collectionId);
+                            ctx.result("Deleted collection with id: " + collectionId).status(200);
+                        }
+                    });
                 });
             });
         });

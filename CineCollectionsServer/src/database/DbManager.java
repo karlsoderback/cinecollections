@@ -197,4 +197,8 @@ public class DbManager {
         }
         return -1;
     }
+
+    public void deleteCollection(String collectionId) throws DbException {
+        executeUpdate("DELETE FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+    }
 }
