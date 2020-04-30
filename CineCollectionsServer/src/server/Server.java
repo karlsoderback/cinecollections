@@ -56,12 +56,6 @@ public class Server {
         /**
          * Routes
          */
-        /*app.get("/", ctx -> ctx.status(200));
-        app.post("/newuser", ctx -> {
-            JSONObject jsonObject = new JSONObject(ctx.body());
-            _dbManager.createNewUser(jsonObject.getString("username"), jsonObject.getString("password"));
-            System.out.println("New user created");
-        });*/
         app.routes(() -> {
             path("/", () -> {
                 get("", ctx -> {
@@ -73,14 +67,7 @@ public class Server {
                     get("/validatesession", validateToken);
                 });
             });
-
-        });/*
-        app.get("/auth", ctx -> {
-            JSONObject jsonObject = new JSONObject(ctx.body());
-            String username = jsonObject.getString("username");
-            app.get("/newsession", generateToken);
-            app.get("/validatesession", validateToken);
-        });*/
+        });
 
         /**
          * Exception handling
