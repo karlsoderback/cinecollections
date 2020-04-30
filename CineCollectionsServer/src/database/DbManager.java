@@ -160,26 +160,30 @@ public class DbManager {
         return false;
     }
 
-    public void createCollection(JSONObject collection) throws DbException {
+    public int createCollection(JSONObject collection) throws DbException {
         String creator = collection.getString("username");
         int creatorId = getUserId(creator);
-        String collection_name = collection.getJSONObject("collection").getString("collection_name");
+        String collectionName = collection.getJSONObject("collection").getString("collection_name");
         JSONArray filmsJSON = collection.getJSONObject("collection").getJSONArray("films");
         String[] films = new String[filmsJSON.length()];
         for (int i = 0; i < filmsJSON.length(); i++) {
             films[i] = String.valueOf(filmsJSON.get(i));
         }
 
-        String sql = "INSERT INTO collections(creator, collection_name, films) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO collections(creator, collection_name, films) VALUES (?, ?, ?) RETURNING collection_id";
         try {
             PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
             pstmt.setInt(1, creatorId);
-            pstmt.setString(2, collection_name);
+            pstmt.setString(2, collectionName);
             pstmt.setArray(3, _dbConnection.createArrayOf("text", films));
-            pstmt.executeUpdate();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (SQLException e) {
             throw new DbException(e.getMessage(), e);
         }
+        return -1;
     }
 
     private int getUserId(String username) throws DbException {

@@ -75,15 +75,22 @@ public class Server {
                     post("/newsession", generateToken);
                     //get("/validatesession", validateToken);
                 });
-                post("/createcollection", ctx -> {
-                    JSONObject jsonObject = new JSONObject(ctx.body());
+                path("collection", () -> {
+                    post("/create", ctx -> {
+                        JSONObject jsonObject = new JSONObject(ctx.body());
 
-                    if (isRequestAuthorized(ctx)) {
-                        _dbManager.createCollection(jsonObject);
-                        ctx.result("Collection: \"" + jsonObject.getJSONObject("collection").getString("collection_name") + "\" was saved!").status(200);
-                    } else {
-                        ctx.result("Token is not valid for user: " + jsonObject.getString("username")).status(403);
-                    }
+                        if (isRequestAuthorized(ctx)) {
+                            int collectionId = _dbManager.createCollection(jsonObject);
+                            ctx.result("Collection: \"" + jsonObject.getJSONObject("collection").getString("collection_name") + "\" was saved!")
+                                    .status(200)
+                                    .header("collection_id", String.valueOf(collectionId));
+                        } else {
+                            ctx.result("Token is not valid for user: " + jsonObject.getString("username")).status(403);
+                        }
+                    });
+                    get("/delete", ctx -> {
+
+                    })
                 });
             });
         });
