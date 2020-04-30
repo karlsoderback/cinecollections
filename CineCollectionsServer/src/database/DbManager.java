@@ -1,8 +1,11 @@
 package database;
 
 import exception.DbException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class DbManager {
@@ -85,7 +88,6 @@ public class DbManager {
         }
     }
 
-
     public void disconnect() throws DbException {
         try {
             _dbConnection.close();
@@ -128,7 +130,7 @@ public class DbManager {
                 rs.close();
                 return true;
             } catch (SQLException e) {
-                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+                throw new DbException(e.getMessage(), e);
             }
         } else {
             throw new DbException("Incorrect credentials");
@@ -153,9 +155,83 @@ public class DbManager {
                     return true;
                 }
             } catch (SQLException e) {
-                throw new DbException("Failed to check result of userdb query: " + e.getMessage(), e);
+                throw new DbException(e.getMessage(), e);
             }
         }
         return false;
+    }
+
+    public int createCollection(JSONObject collection) throws DbException {
+        String creator = collection.getString("username");
+        int creatorId = getUserId(creator);
+        String collectionName = collection.getJSONObject("collection").getString("collection_name");
+        JSONArray filmsJSON = collection.getJSONObject("collection").getJSONArray("films");
+        String[] films = new String[filmsJSON.length()];
+        for (int i = 0; i < filmsJSON.length(); i++) {
+            films[i] = String.valueOf(filmsJSON.get(i));
+        }
+
+        String sql = "INSERT INTO collections(creator, collection_name, films) VALUES (?, ?, ?) RETURNING collection_id";
+        try {
+            PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+            pstmt.setInt(1, creatorId);
+            pstmt.setString(2, collectionName);
+            pstmt.setArray(3, _dbConnection.createArrayOf("text", films));
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage(), e);
+        }
+        return -1;
+    }
+
+    private int getUserId(String username) throws DbException {
+        ResultSet rs = executeQuery("SELECT id FROM users WHERE username = \'" + username + "\'", _dbConnection);
+        try {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage(), e);
+        }
+        return -1;
+    }
+
+    public void deleteCollection(String collectionId) throws DbException {
+        executeUpdate("DELETE FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+    }
+
+    public void addSubscriber(String username, String collectionId) throws DbException {
+        if (userExists(username)) {
+            Integer userId = getUserId(username);
+            try {
+                ResultSet rs = executeQuery("SELECT subscribers FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+                Integer[] subscribers = new Integer[1];
+                if (rs.next()) {
+                    Array arr = rs.getArray(1);
+                    if (arr != null) {
+                        Integer[] tmp = (Integer[]) arr.getArray();
+                        subscribers = new Integer[tmp.length + 1];
+                        for (int i = 0; i < tmp.length; i++) {
+                            subscribers[i] = tmp[i];
+                        }
+                        subscribers[subscribers.length] = userId;
+                    } else {
+                        subscribers[0] = userId;
+                    }
+                }
+                System.out.println(Arrays.toString(subscribers));
+
+                String sql = "UPDATE collections SET subscribers = (?) WHERE collection_id = \'" + collectionId + "\';";
+                PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+                pstmt.setArray(1, _dbConnection.createArrayOf("INTEGER", subscribers));
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DbException(e.getMessage(), e);
+            }
+
+        }
     }
 }
