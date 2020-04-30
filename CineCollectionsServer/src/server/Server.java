@@ -95,6 +95,17 @@ public class Server {
                             ctx.result("Deleted collection with id: " + collectionId).status(200);
                         }
                     });
+                    get("/subscribe", ctx -> {
+                        JSONObject jsonObject = new JSONObject(ctx.body());
+                        String username = jsonObject.getString("username");
+                        String collectionId = jsonObject.getString("collectionId");
+                        if (isRequestAuthorized(ctx)) {
+                            _dbManager.addSubscriber(username, collectionId);
+                            ctx.result("\"" + username + "\" is now a subscriber of collection with id: " + collectionId).status(200);
+                        } else {
+                            ctx.result("Token is not valid for user: " + jsonObject.getString("username")).status(403);
+                        }
+                    });
                 });
             });
         });

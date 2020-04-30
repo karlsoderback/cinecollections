@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class DbManager {
@@ -200,5 +201,37 @@ public class DbManager {
 
     public void deleteCollection(String collectionId) throws DbException {
         executeUpdate("DELETE FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+    }
+
+    public void addSubscriber(String username, String collectionId) throws DbException {
+        if (userExists(username)) {
+            Integer userId = getUserId(username);
+            try {
+                ResultSet rs = executeQuery("SELECT subscribers FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+                Integer[] subscribers = new Integer[1];
+                if (rs.next()) {
+                    Array arr = rs.getArray(1);
+                    if (arr != null) {
+                        Integer[] tmp = (Integer[]) arr.getArray();
+                        subscribers = new Integer[tmp.length + 1];
+                        for (int i = 0; i < tmp.length; i++) {
+                            subscribers[i] = tmp[i];
+                        }
+                        subscribers[subscribers.length] = userId;
+                    } else {
+                        subscribers[0] = userId;
+                    }
+                }
+                System.out.println(Arrays.toString(subscribers));
+
+                String sql = "UPDATE collections SET subscribers = (?) WHERE collection_id = \'" + collectionId + "\';";
+                PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+                pstmt.setArray(1, _dbConnection.createArrayOf("INTEGER", subscribers));
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DbException(e.getMessage(), e);
+            }
+
+        }
     }
 }
