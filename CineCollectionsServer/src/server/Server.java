@@ -107,10 +107,7 @@ public class Server {
                             ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
                             ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
-                            String ret = serializeCollection(myCollections);
-                            ret += serializeCollection(subscribedCollections);
-                            //System.out.println(ret);
-                            ctx.json(ret).status(200);
+                            ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200);
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
                         }
@@ -158,14 +155,29 @@ public class Server {
         return false;
     }
 
-    private String serializeCollection(ArrayList<CineCollection> cineCollections) {
+    private String serializeCollections(ArrayList<CineCollection> myCollections, ArrayList<CineCollection> subscribedCollections) {
+        StringBuilder serialized = new StringBuilder("{\n\"my_collections\":\n  [\n");
+        serialized.append(createCollectionJSONList(myCollections));
+        serialized.append(",\n");
+
+        serialized.append("\"subscribed_collections\":\n  [\n");
+        serialized.append(createCollectionJSONList(subscribedCollections));
+        serialized.append("\n}");
+
+        return serialized.toString();
+    }
+
+    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections){
         StringBuilder serialized = new StringBuilder();
         for (CineCollection collection : cineCollections) {
-            JSONObject jsonObject = new JSONObject(collection);
-            System.out.println(jsonObject.toString());
-            serialized.append(jsonObject.toString()).append("\n");
+            if (cineCollections.indexOf(collection) != cineCollections.size() - 1) {
+                serialized.append(collection.serialize());
+                serialized.append(",\n");
+            } else {
+                serialized.append(collection.serialize());
+                serialized.append("\n  ]");
+            }
         }
-        //System.out.println(serialized.toString());
         return serialized.toString();
     }
 }
