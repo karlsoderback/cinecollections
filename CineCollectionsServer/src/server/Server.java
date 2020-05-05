@@ -9,9 +9,11 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import javalinjwt.JavalinJWT;
 import javalinjwt.examples.JWTResponse;
+import objects.CineCollection;
+import objects.User;
 import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -32,7 +34,7 @@ public class Server {
         }
 
         /**
-         * Token handlers
+         * Token handler
          */
         Handler generateToken = ctx -> {
             JSONObject jsonObject = new JSONObject(ctx.body());
@@ -47,9 +49,6 @@ public class Server {
                 ctx.result("Invalid credentials were provided").status(403);
             }
         };
-        /*Handler validateToken = ctx -> {
-
-        };*/ // TODO - Probably remove this handler
 
         /**
          * Routes
@@ -61,49 +60,56 @@ public class Server {
                 });
                 post("/newuser", ctx -> {
                     JSONObject jsonObject = new JSONObject(ctx.body());
-                    _dbManager.createNewUser(jsonObject.getString("username"), jsonObject.getString("password"));
-                    System.out.println("New user created");
-                });
-                /*post("/login", ctx -> {
-                    JSONObject jsonObject = new JSONObject(ctx.body());
                     String username = jsonObject.getString("username");
-                    _dbManager.checkCredentials(username, jsonObject.getString("password"));
-                    System.out.println("Succesfully logged in \"" + username + "\"");
-                });*/ // TODO - Probably remove this post route
+                    _dbManager.createNewUser(username, jsonObject.getString("password"));
+                    System.out.println("New user created");
+                    ctx.status(200).result("Welcome to CineCollections, " + username + "!");
+                });
                 path("auth", () -> {
-                    get("", ctx -> ctx.result("auth")); // TODO - Delete?
                     post("/newsession", generateToken);
-                    //get("/validatesession", validateToken);
                 });
                 path("collection", () -> {
                     post("/create", ctx -> {
-                        JSONObject jsonObject = new JSONObject(ctx.body());
-                        if (isRequestAuthorized(ctx)) {
-                            int collectionId = _dbManager.createCollection(jsonObject);
-                            ctx.result("Collection: \"" + jsonObject.getJSONObject("collection").getString("collection_name") + "\" was saved!")
+                        String username = ctx.queryParam("username");
+                        if (requestIsAuthorized(ctx, username)) {
+                            JSONObject collection = new JSONObject(ctx.body()).getJSONObject("collection");
+                            int collectionId = _dbManager.createCollection(collection, username);
+                            ctx.result("Collection: \"" + collection.getString("collection_name") + "\" was saved!")
                                     .status(200)
                                     .header("collection_id", String.valueOf(collectionId));
                         } else {
-                            ctx.result("Token is not valid for user: " + jsonObject.getString("username")).status(403);
+                            ctx.result("Token is not valid for user: " + username).status(403);
                         }
                     });
                     get("/delete", ctx -> {
-                        JSONObject jsonObject = new JSONObject(ctx.body());
-                        String collectionId = jsonObject.getString("collectionId");
-                        if (isRequestAuthorized(ctx)) {
+                        String username = ctx.queryParam("username");
+                        if (requestIsAuthorized(ctx, username)) {
+                            String collectionId = ctx.queryParam("collectionId");
                             _dbManager.deleteCollection(collectionId);
                             ctx.result("Deleted collection with id: " + collectionId).status(200);
+                        } else {
+                            ctx.result("Token is not valid for user: " + username).status(403);
                         }
                     });
                     get("/subscribe", ctx -> {
-                        JSONObject jsonObject = new JSONObject(ctx.body());
-                        String username = jsonObject.getString("username");
-                        String collectionId = jsonObject.getString("collectionId");
-                        if (isRequestAuthorized(ctx)) {
+                        String username = ctx.queryParam("username");
+                        if (requestIsAuthorized(ctx, username)) {
+                            String collectionId = ctx.queryParam("collectionId");
                             _dbManager.addSubscriber(username, collectionId);
                             ctx.result("\"" + username + "\" is now a subscriber of collection with id: " + collectionId).status(200);
                         } else {
-                            ctx.result("Token is not valid for user: " + jsonObject.getString("username")).status(403);
+                            ctx.result("Token is not valid for user: " + username).status(403);
+                        }
+                    });
+                    get("/getallforuser", ctx -> {
+                        String username = ctx.queryParam("username");
+                        if (requestIsAuthorized(ctx, username)) {
+                            ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
+                            ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
+
+                            ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200);
+                        } else {
+                            ctx.result("Token is not valid for user: " + username).status(403);
                         }
                     });
                 });
@@ -116,23 +122,27 @@ public class Server {
         app.exception(DbException.class, (e, ctx) -> {
             String message = "A database error ocurred: " + e.getMessage();
             System.err.println(message); // TODO - Set up proper responses with error/success codes
+            System.err.println("Stacktrace:");
+            e.printStackTrace();
             ctx.status(401).result(message);
         });
         app.exception(NullPointerException.class, (e, ctx) -> {
             String message = "The server encountered a NullPointerException: " + e.getMessage();
             System.err.println(message);
-            System.err.println("\nStacktrace:\n" + Arrays.toString(e.getStackTrace()));
+            System.err.println("Stacktrace:");
+            e.printStackTrace();
             ctx.status(400).result(message);
         });
         app.exception(Exception.class, (e, ctx) -> {
             String message = "The server encountered an error: " + e.getMessage();
             System.err.println(message);
-            System.err.println("\nStacktrace:\n" + Arrays.toString(e.getStackTrace()));
+            System.err.println("Stacktrace:");
+            e.printStackTrace();
             ctx.status(400).result(message);
         });
     }
 
-    private boolean isRequestAuthorized(Context ctx) throws DbException {
+    private boolean requestIsAuthorized(Context ctx, String username) throws DbException {
         Optional<DecodedJWT> decodedJWT = JavalinJWT.getTokenFromHeader(ctx).flatMap(_auth.provider::validateToken);
         String token = String.valueOf(JavalinJWT.getTokenFromHeader(ctx));
         token = token.substring(9, token.length() - 1);
@@ -140,10 +150,34 @@ public class Server {
         if (!decodedJWT.isPresent()) {
             ctx.status(401).result("Missing or invalid token");
         } else {
-            JSONObject jsonObject = new JSONObject(ctx.body());
-            String username = jsonObject.getString("username");
             return _dbManager.isTokenValid(username, token);
         }
         return false;
+    }
+
+    private String serializeCollections(ArrayList<CineCollection> myCollections, ArrayList<CineCollection> subscribedCollections) {
+        StringBuilder serialized = new StringBuilder("{\n\"my_collections\":\n  [\n");
+        serialized.append(createCollectionJSONList(myCollections));
+        serialized.append(",\n");
+
+        serialized.append("\"subscribed_collections\":\n  [\n");
+        serialized.append(createCollectionJSONList(subscribedCollections));
+        serialized.append("\n}");
+
+        return serialized.toString();
+    }
+
+    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections){
+        StringBuilder serialized = new StringBuilder();
+        for (CineCollection collection : cineCollections) {
+            if (cineCollections.indexOf(collection) != cineCollections.size() - 1) {
+                serialized.append(collection.serialize());
+                serialized.append(",\n");
+            } else {
+                serialized.append(collection.serialize());
+                serialized.append("\n  ]");
+            }
+        }
+        return serialized.toString();
     }
 }

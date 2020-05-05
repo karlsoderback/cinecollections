@@ -6,7 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import javalinjwt.JWTGenerator;
 import javalinjwt.JWTProvider;
-import server.User;
+import objects.User;
 
 public class AuthManager {
     private final Algorithm algorithm = Algorithm.HMAC256("therealslimshady");
