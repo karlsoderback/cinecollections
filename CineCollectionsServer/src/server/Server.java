@@ -108,6 +108,7 @@ public class Server {
                             ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
                             ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
+                            System.out.println("Returned all collections related to \"" + username + "\"");
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
                         }
