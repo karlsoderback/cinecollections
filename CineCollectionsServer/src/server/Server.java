@@ -107,7 +107,7 @@ public class Server {
                             ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
                             ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
-                            ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200);
+                            ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
                         }
@@ -119,9 +119,9 @@ public class Server {
         /**
          * Exception handling
          */
-        app.exception(DbException.class, (e, ctx) -> {
+        app.exception(DbException.class, (e, ctx) -> { // TODO - review responses and error codes
             String message = "A database error ocurred: " + e.getMessage();
-            System.err.println(message); // TODO - Set up proper responses with error/success codes
+            System.err.println(message); 
             System.err.println("Stacktrace:");
             e.printStackTrace();
             ctx.status(401).result(message);
