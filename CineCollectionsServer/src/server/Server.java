@@ -56,7 +56,7 @@ public class Server {
         app.routes(() -> {
             path("/", () -> {
                 get("", ctx -> {
-                    ctx.status(200).result("Hello World");
+                    ctx.status(200).result("This is the default route of CineCollections");
                 });
                 post("/newuser", ctx -> {
                     JSONObject jsonObject = new JSONObject(ctx.body());
