@@ -85,7 +85,7 @@ public class Server {
                         String username = ctx.queryParam("username");
                         if (requestIsAuthorized(ctx, username)) {
                             String collectionId = ctx.queryParam("collectionId");
-                            _dbManager.deleteCollection(collectionId);
+                            _dbManager.deleteCollection(username, collectionId);
                             ctx.result("Deleted collection with id: " + collectionId).status(200);
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
@@ -122,7 +122,7 @@ public class Server {
          */
         app.exception(DbException.class, (e, ctx) -> { // TODO - review responses and error codes
             String message = "A database error ocurred: " + e.getMessage();
-            System.err.println(message); 
+            System.err.println(message);
             System.err.println("Stacktrace:");
             e.printStackTrace();
             ctx.status(401).result(message);
@@ -168,7 +168,7 @@ public class Server {
         return serialized.toString();
     }
 
-    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections){
+    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections) {
         StringBuilder serialized = new StringBuilder();
         for (CineCollection collection : cineCollections) {
             if (cineCollections.indexOf(collection) != cineCollections.size() - 1) {
@@ -176,8 +176,8 @@ public class Server {
                 serialized.append(",\n");
             } else {
                 serialized.append(collection.serialize());
-                serialized.append("\n  ]");
             }
+            serialized.append("\n  ]");
         }
         return serialized.toString();
     }
