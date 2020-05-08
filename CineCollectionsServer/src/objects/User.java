@@ -1,14 +1,14 @@
-package server;
+package objects;
 
 public class User {
     private String _username;
     private String _password;
-    private final int _id;
+    //private final int _id;
 
-    public User(Integer id, String username, String password) {
+    public User(/*Integer id,*/ String username, String password) {
         _username = username;
         _password = password;
-        _id = id;
+        //_id = id;
     }
 
     public void setUsername(String newUsername) {
@@ -27,8 +27,8 @@ public class User {
         return _password;
     }
 
-    public Integer getId() {
+    /*public Integer getId() {
         return _id;
-    }
+    }*/
 }
 
