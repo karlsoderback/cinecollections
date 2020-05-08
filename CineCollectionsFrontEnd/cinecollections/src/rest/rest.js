@@ -1,8 +1,4 @@
-
-class Rest {
-   constructor() {}
-
-   sendPOST(restUrl, body) {
+export function sendPOST(restUrl, body) {
        return fetch(restUrl,
           {
              method: 'POST',
@@ -20,7 +16,7 @@ class Rest {
           });
     }
     
-   sendGET(url) {
+export function sendGET(url) {
        return fetch(url,
           {
              method: 'GET',
@@ -37,7 +33,3 @@ class Rest {
              return response.json();
           });
     }
-
-}
-
-module.exports = Rest;

@@ -1,14 +1,7 @@
 import React, {Component} from "react";
-import rest from "./rest/rest.js";
+import { sendGET, sendPost } from "./rest/rest.js";
 
-    class App extends Component {
-
-      /*
-      state = {
-        collections: null
-      }
-
-      */
+export default function App(props){
      /* componentDidMount() {
         fetch('http://localhost:7000/collection/getallforuser?username=slimshady')
         .then(res => res.json())
@@ -17,15 +10,13 @@ import rest from "./rest/rest.js";
         })
         .catch(console.log)
       } */
-      collections = rest.sendGET("https://localhost:7000/collection/getallforuser&username=slimshady")
-
-      render () {
-        return (
-          "Hello World"
-          //this.state.collections
-            //<Collections collections={this.state.collections} />
-          );
+      
+      function click() {
+        sendGET("http://127.0.0.1:7000/").then( // collection/getallforuser?username=slimshady
+          data => this.setState({data}));
       }
-    }
 
-    export default App;
+      return (
+        <button onClick={click}>CLICK</button>
+      );
+    }
