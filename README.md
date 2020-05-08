@@ -13,3 +13,7 @@ To create a web server that hosts a REST API, I will use the Javalin framework. 
 To easily be able to search and access a vast library of movies, I will use the OMDb API: http://www.omdbapi.com/
 
 The front-end will be made using React. The reason I am choosing React is because it is a very popular framework for front-end development and something I would very much like to learn more about. Its popularity also speaks to the fact that it is most likely a good framework for front-end development which makes me hopeful that it will be suitable for creating the page I want to create.
+
+# Mid Course Screencast
+
+Available: https://www.youtube.com/watch?v=rqZLws9-ADI
