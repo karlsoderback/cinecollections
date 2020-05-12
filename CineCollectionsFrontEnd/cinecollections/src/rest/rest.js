@@ -1,5 +1,5 @@
-export function sendPOST(restUrl, body) {
-       return fetch(restUrl,
+export function sendPOST(url, body) {
+       return fetch(url,
           {
              method: 'POST',
              headers: {
@@ -25,7 +25,6 @@ export function sendGET(url) {
                 'Content-Type': 'application/json',
              },
              mode: 'cors',
-    
           }).then(response => {
              if (!response.ok) {
                 throw response.statusText;

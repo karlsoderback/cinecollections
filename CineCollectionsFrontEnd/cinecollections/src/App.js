@@ -1,7 +1,9 @@
 import React, {Component} from "react";
 import { sendGET, sendPost } from "./rest/rest.js";
+import Login from "./components/login.js";
 
 export default function App(props){
+
      /* componentDidMount() {
         fetch('http://localhost:7000/collection/getallforuser?username=slimshady')
         .then(res => res.json())
@@ -11,12 +13,18 @@ export default function App(props){
         .catch(console.log)
       } */
       
-      function click() {
-        sendGET("http://127.0.0.1:7000/").then( // collection/getallforuser?username=slimshady
+      /*function click() {
+        sendGET("/collection/getallforuser?username=slimshady").then(
           data => this.setState({data}));
       }
 
       return (
+        <div className="Login">
+
+        </div>
         <button onClick={click}>CLICK</button>
+      );*/
+      return (
+        <Login />
       );
     }
