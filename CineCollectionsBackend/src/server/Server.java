@@ -103,15 +103,15 @@ public class Server {
                     });
                     get("/getallforuser", ctx -> {
                         String username = ctx.queryParam("username");
-                        if (requestIsAuthorized(ctx, username)) {
+                        //if (requestIsAuthorized(ctx, username)) { // TODO - This route should probably be available without auth
                             ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
                             ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
                             ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
                             System.out.println("Returned all collections related to \"" + username + "\"");
-                        } else {
+                        /*} else {
                             ctx.result("Token is not valid for user: " + username).status(403);
-                        }
+                        }*/
                     });
                 });
             });
