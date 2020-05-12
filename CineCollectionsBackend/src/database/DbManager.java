@@ -212,8 +212,14 @@ public class DbManager {
         return -1;
     }
 
-    public void deleteCollection(String collectionId) throws DbException {
-        executeUpdate("DELETE FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+    public void deleteCollection(String username, String collectionId) throws DbException {
+        if (userExists(username)) {
+            if (getUserId(username) == getCollectionCreator(collectionId)) {
+                executeUpdate("DELETE FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+            } else {
+                throw new DbException("\"" + username + "\" is not the creator of collection: " + collectionId);
+            }
+        }
     }
 
     public void addSubscriber(String username, String collectionId) throws DbException {

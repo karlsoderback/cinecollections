@@ -56,7 +56,7 @@ public class Server {
         app.routes(() -> {
             path("/", () -> {
                 get("", ctx -> {
-                    ctx.status(200).result("Hello World");
+                    ctx.status(200).result("This is the default route of CineCollections");
                 });
                 post("/newuser", ctx -> {
                     JSONObject jsonObject = new JSONObject(ctx.body());
@@ -66,7 +66,7 @@ public class Server {
                     ctx.status(200).result("Welcome to CineCollections, " + username + "!");
                 });
                 path("auth", () -> {
-                    post("/newsession", generateToken);
+                    post("/newsession", generateToken); // TODO - make incorrect credentails return false instead of throwing exception
                 });
                 path("collection", () -> {
                     post("/create", ctx -> {
@@ -85,7 +85,7 @@ public class Server {
                         String username = ctx.queryParam("username");
                         if (requestIsAuthorized(ctx, username)) {
                             String collectionId = ctx.queryParam("collectionId");
-                            _dbManager.deleteCollection(collectionId);
+                            _dbManager.deleteCollection(username, collectionId);
                             ctx.result("Deleted collection with id: " + collectionId).status(200);
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
@@ -103,14 +103,15 @@ public class Server {
                     });
                     get("/getallforuser", ctx -> {
                         String username = ctx.queryParam("username");
-                        if (requestIsAuthorized(ctx, username)) {
+                        //if (requestIsAuthorized(ctx, username)) { // TODO - This route should probably be available without auth
                             ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
                             ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
                             ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
-                        } else {
+                            System.out.println("Returned all collections related to \"" + username + "\"");
+                        /*} else {
                             ctx.result("Token is not valid for user: " + username).status(403);
-                        }
+                        }*/
                     });
                 });
             });
@@ -121,7 +122,7 @@ public class Server {
          */
         app.exception(DbException.class, (e, ctx) -> { // TODO - review responses and error codes
             String message = "A database error ocurred: " + e.getMessage();
-            System.err.println(message); 
+            System.err.println(message);
             System.err.println("Stacktrace:");
             e.printStackTrace();
             ctx.status(401).result(message);
@@ -158,16 +159,18 @@ public class Server {
     private String serializeCollections(ArrayList<CineCollection> myCollections, ArrayList<CineCollection> subscribedCollections) {
         StringBuilder serialized = new StringBuilder("{\n\"my_collections\":\n  [\n");
         serialized.append(createCollectionJSONList(myCollections));
+        serialized.append("\n  ]");
         serialized.append(",\n");
 
         serialized.append("\"subscribed_collections\":\n  [\n");
         serialized.append(createCollectionJSONList(subscribedCollections));
+        serialized.append("\n  ]");
         serialized.append("\n}");
 
         return serialized.toString();
     }
 
-    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections){
+    private String createCollectionJSONList(ArrayList<CineCollection> cineCollections) {
         StringBuilder serialized = new StringBuilder();
         for (CineCollection collection : cineCollections) {
             if (cineCollections.indexOf(collection) != cineCollections.size() - 1) {
@@ -175,7 +178,6 @@ public class Server {
                 serialized.append(",\n");
             } else {
                 serialized.append(collection.serialize());
-                serialized.append("\n  ]");
             }
         }
         return serialized.toString();
