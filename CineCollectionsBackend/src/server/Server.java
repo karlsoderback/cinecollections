@@ -66,7 +66,7 @@ public class Server {
                     ctx.status(200).result("Welcome to CineCollections, " + username + "!");
                 });
                 path("auth", () -> {
-                    post("/newsession", generateToken);
+                    post("/newsession", generateToken); // TODO - make incorrect credentails return false instead of throwing exception
                 });
                 path("collection", () -> {
                     post("/create", ctx -> {
@@ -159,10 +159,12 @@ public class Server {
     private String serializeCollections(ArrayList<CineCollection> myCollections, ArrayList<CineCollection> subscribedCollections) {
         StringBuilder serialized = new StringBuilder("{\n\"my_collections\":\n  [\n");
         serialized.append(createCollectionJSONList(myCollections));
+        serialized.append("\n  ]");
         serialized.append(",\n");
 
         serialized.append("\"subscribed_collections\":\n  [\n");
         serialized.append(createCollectionJSONList(subscribedCollections));
+        serialized.append("\n  ]");
         serialized.append("\n}");
 
         return serialized.toString();
@@ -177,7 +179,6 @@ public class Server {
             } else {
                 serialized.append(collection.serialize());
             }
-            serialized.append("\n  ]");
         }
         return serialized.toString();
     }
