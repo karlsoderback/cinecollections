@@ -24,8 +24,11 @@ public class Server {
     private final AuthManager _auth = new AuthManager();
 
     public void run() {
-        Javalin app = Javalin.create().start(7000); //TODO - Make port configurable
+        Javalin app = Javalin.create(config ->{
+            config.enableCorsForAllOrigins();
+        }).start(7000); //TODO - Make port configurable
         System.out.println("Server running at localhost:7000");
+
 
         try {
             _dbManager.connect();
@@ -46,7 +49,9 @@ public class Server {
                 ctx.json(new JWTResponse(token));//.status(200).result(message);
                 System.out.println(message);
             } else {
-                ctx.result("Invalid credentials were provided").status(403);
+                String message = "Invalid credentials were provided";
+                System.out.println(message);
+                ctx.result(message).status(403);
             }
         };
 
