@@ -1,5 +1,7 @@
+const baseURL = process.env.REACT_APP_BACKEND_API_ADDRESS + ":" + process.env.REACT_APP_BACKEND_API_PORT + "/";
+
 export function sendPOST(url, body) {
-       return fetch(url,
+         return fetch(baseURL + url,
           {
              method: 'POST',
              headers: {
@@ -17,7 +19,7 @@ export function sendPOST(url, body) {
     }
     
 export function sendGET(url) {
-       return fetch(url,
+       return fetch(baseURL + url,
           {
              method: 'GET',
              headers: {

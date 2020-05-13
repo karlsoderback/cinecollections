@@ -126,7 +126,7 @@ public class DbManager {
             try {
                 if (rs.next()) {
                     if (!rs.getString(3).equals(password)) {
-                        throw new DbException("Incorrect credentials");
+                        return false;
                     }
                 }
                 rs.close();
@@ -135,7 +135,7 @@ public class DbManager {
                 throw new DbException(e.getMessage(), e);
             }
         } else {
-            throw new DbException("Incorrect credentials");
+            return false;
         }
     }
 
