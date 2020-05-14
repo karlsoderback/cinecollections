@@ -24,7 +24,7 @@ public class Server {
     private final AuthManager _auth = new AuthManager();
 
     public void run() {
-        Javalin app = Javalin.create(config ->{
+        Javalin app = Javalin.create(config -> {
             config.enableCorsForAllOrigins();
         }).start(7000); //TODO - Make port configurable
         System.out.println("Server running at localhost:7000");
@@ -66,12 +66,16 @@ public class Server {
                 post("/newuser", ctx -> {
                     JSONObject jsonObject = new JSONObject(ctx.body());
                     String username = jsonObject.getString("username");
-                    _dbManager.createNewUser(username, jsonObject.getString("password"));
-                    System.out.println("New user created");
-                    ctx.status(200).result("Welcome to CineCollections, " + username + "!");
+                    if (_dbManager.createNewUser(username, jsonObject.getString("password"))) {
+                        System.out.println("New user created");
+                        ctx.status(200).result("Welcome to CineCollections, " + username + "!");
+                    } else {
+                        System.out.println("User already exists");
+                        ctx.status(401).result("A user with username " + username + " already exists");
+                    }
                 });
                 path("auth", () -> {
-                    post("/newsession", generateToken); // TODO - make incorrect credentails return false instead of throwing exception
+                    post("/newsession", generateToken);
                 });
                 path("collection", () -> {
                     post("/create", ctx -> {
@@ -109,11 +113,11 @@ public class Server {
                     get("/getallforuser", ctx -> {
                         String username = ctx.queryParam("username");
                         //if (requestIsAuthorized(ctx, username)) { // TODO - This route should probably be available without auth
-                            ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
-                            ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
+                        ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
+                        ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
-                            ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
-                            System.out.println("Returned all collections related to \"" + username + "\"");
+                        ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
+                        System.out.println("Returned all collections related to \"" + username + "\"");
                         /*} else {
                             ctx.result("Token is not valid for user: " + username).status(403);
                         }*/
