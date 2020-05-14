@@ -1,17 +1,25 @@
-import React, { Component, useState } from "react";
+import React, { useEffect , useState } from "react";
 import { render } from "react-dom";
 import { sendPOST } from "../rest/rest.js"
-//import React, { } from "react"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
+//import { Redirect } from "react-router-dom";
+import history from "../components/history.js"
 
-export default function Login(props) {
+export default function Startscreen(props) {
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [registerUsername, setRegisterUsername] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
-    const [token, setToken] = useState("");
+    //const [token, setToken] = useState("");
     const [response, setResponse] = useState("");
+    const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") || "");
+
+    function renderRedirect() {
+        if (loggedIn) {
+            history.push("/profile");
+        }
+    }
 
     function validateForm(username, password) {
         return username.length > 0 && password.length > 0;
@@ -26,7 +34,11 @@ export default function Login(props) {
         sendPOST("auth/newsession", body).then(
             data => {
                 setResponse("");
-                setToken(data.jwt);
+                //setToken(data.jwt);
+                //setLoggedIn(true);
+                localStorage.setItem("username", loginUsername);
+                localStorage.setItem("token", data.jwt);
+                localStorage.setItem("loggedIn", true);
             }
             ).catch(error => {
                 {setResponse(error.message)};
@@ -54,6 +66,7 @@ export default function Login(props) {
 
     return (
         <div className="Startscreen">
+            {renderRedirect()}
             <h1>CineCollections</h1>
             <div className="Login">
                 <h2>Login</h2>
@@ -107,4 +120,4 @@ export default function Login(props) {
         </div>
     );
 }
-render(<Login />, document.getElementById('root'));
+render(<Startscreen />, document.getElementById('root'));
