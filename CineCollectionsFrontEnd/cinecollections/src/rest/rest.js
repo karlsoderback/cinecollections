@@ -12,9 +12,15 @@ export function sendPOST(url, body) {
              mode: 'cors',
           }).then(response => {
              if (!response.ok) {
-                throw response.statusText;
+               return response.text().then(text => {throw Error(text)});
+             } else {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                   return response.json();
+                } else {
+                   return response.text();
+                }
              }
-             return response.statusText;
           });
     }
     
