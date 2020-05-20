@@ -4,9 +4,14 @@ import { sendPOST } from "../rest/rest.js"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
 //import { Redirect } from "react-router-dom";
-import history from "../components/history.js"
+//import history from "../components/history.js"
+import { browserHistory } from "react-router";
 
-export default function Startscreen(props) {
+import { connect } from "react-redux";
+import { logged_in } from "../redux/actions.js";
+
+
+function Startscreen({logged_in}) {
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [registerUsername, setRegisterUsername] = useState("");
@@ -16,8 +21,8 @@ export default function Startscreen(props) {
     const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") || "");
 
     function renderRedirect() {
-        if (loggedIn) {
-            history.push("/profile");
+        if (loggedIn) { // TODO - LOG state and check through global state if logged in or not
+            browserHistory.push("/profile");
         }
     }
 
@@ -36,9 +41,13 @@ export default function Startscreen(props) {
                 setResponse("");
                 //setToken(data.jwt);
                 //setLoggedIn(true);
-                localStorage.setItem("username", loginUsername);
+                /*localStorage.setItem("username", loginUsername);
                 localStorage.setItem("token", data.jwt);
-                localStorage.setItem("loggedIn", true);
+                localStorage.setItem("loggedIn", true);*/
+                var data;
+                data.username = loginUsername;
+                data.token = data.jwt;
+                logged_in(data);
             }
             ).catch(error => {
                 {setResponse(error.message)};
@@ -121,3 +130,12 @@ export default function Startscreen(props) {
     );
 }
 render(<Startscreen />, document.getElementById('root'));
+
+export default connect(
+    state => (//{
+        /*loggedIn: state.loginState.loggedIn,
+        token: state.loginState.token,
+        username: state.loginState.username}),*/
+        null,
+        {logged_in})
+)(Startscreen);
