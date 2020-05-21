@@ -1,26 +1,51 @@
-import React, { Component, useState } from "react";
+import React, { useEffect , useState } from "react";
 import { render } from "react-dom";
 import { sendPOST } from "../rest/rest.js"
-//import React, { } from "react"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
+import Parser from "html-react-parser";
+import { browserHistory } from "react-router";
 
-export default function Login(props) {
+import { connect } from "react-redux";
+import { logged_in } from "../redux/actions.js";
+
+
+function Startscreen (props) {
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [registerUsername, setRegisterUsername] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
+ 
+    const [response, setResponse] = useState(""); 
+    
+    if(props.loggedIn) {
+        browserHistory.push("/profile");
+    }
 
     function validateForm(username, password) {
         return username.length > 0 && password.length > 0;
     }
 
+    
+    function createNewSession(body) {
+        sendPOST("auth/newsession", body).then(
+            data => {
+                setResponse("");
+                let loginData = {username: body.username, token: data.jwt};
+                props.dispatch(logged_in(loginData));
+                browserHistory.push("/profile")
+            }
+            ).catch(error => {
+                {setResponse(error.message)};
+            });
+        }
+        
     function loginSubmit (event) {
-        const body = 
+        const body =
         {
             "username": loginUsername,
             "password": loginPassword
         }
-        sendPOST("auth/newsession", body);
+        createNewSession(body)
         event.preventDefault();
     }
 
@@ -30,7 +55,14 @@ export default function Login(props) {
             "username": registerUsername,
             "password": registerPassword
         }
-        sendPOST("newuser", body);
+        sendPOST("newuser", body).then(
+            data => {
+                setResponse("");
+                createNewSession(body);
+            }
+            ).catch(error => {
+                {setResponse(error.message)};
+            });
         event.preventDefault();
     }
 
@@ -40,7 +72,7 @@ export default function Login(props) {
             <div className="Login">
                 <h2>Login</h2>
                 <form onSubmit={loginSubmit}>
-                    <FormGroup controlId="loginUsername" bsSize="large">
+                    <FormGroup controlId="loginUsername" bssize="large">
                         <FormControl 
                             autoFocus
                             type="text"
@@ -48,14 +80,14 @@ export default function Login(props) {
                             onChange={e => setLoginUsername(e.target.value)}
                         />
                     </FormGroup>
-                    <FormGroup controlId="loginPassword" bsSize="large">
+                    <FormGroup controlId="loginPassword" bssize="large">
                         <FormControl 
                             type="password"
                             value={loginPassword}
                             onChange={e => setLoginPassword(e.target.value)}
                         />
                     </FormGroup>
-                    <Button block bsSize="large" disabled={!validateForm(loginUsername, loginPassword)} type="submit">
+                    <Button block bssize="large" disabled={!validateForm(loginUsername, loginPassword)} type="submit">
                         Login
                     </Button>
                 </form>
@@ -63,7 +95,7 @@ export default function Login(props) {
             <div className="Register">
                 <h2>Register</h2>
                 <form onSubmit={registerSubmit}>
-                    <FormGroup controlId="registerUsername" bsSize="large">
+                    <FormGroup controlId="registerUsername" bssize="large">
                             <FormControl 
                                 autoFocus
                                 type="text"
@@ -71,19 +103,31 @@ export default function Login(props) {
                                 onChange={e => setRegisterUsername(e.target.value)}
                             />
                         </FormGroup>
-                        <FormGroup controlId="registerPassword" bsSize="large">
+                        <FormGroup controlId="registerPassword" bssize="large">
                             <FormControl 
                                 type="password"
                                 value={registerPassword}
                                 onChange={e => setRegisterPassword(e.target.value)}
                             />
                         </FormGroup>
-                        <Button block bsSize="large" disabled={!validateForm(registerUsername, registerPassword)} type="submit">
+                        <Button block bssize="large" disabled={!validateForm(registerUsername, registerPassword)} type="submit">
                             Register
                         </Button>
                 </form>
             </div>
+            <div className="response">
+                {Parser(response)}
+            </div>
         </div>
     );
 }
-render(<Login />, document.getElementById('root'));
+
+function mapStateToProps(state) {
+    return {
+        loggedIn: state.loginState.loggedIn
+        //token: state.loginState.token,
+        //username: state.loginState.username,
+    }
+}
+
+export default connect(mapStateToProps)(Startscreen);

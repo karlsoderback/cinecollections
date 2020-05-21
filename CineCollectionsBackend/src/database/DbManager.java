@@ -99,12 +99,13 @@ public class DbManager {
         }
     }
 
-    public void createNewUser(String username, String password) throws DbException {
+    public boolean createNewUser(String username, String password) throws DbException {
         if (userExists(username)) {
-            throw new DbException("A user with this username already exists!");
+            return false;
         }
         executeUpdate("INSERT INTO users(username, password) VALUES (\'" + username + "\', \'" + password + "\');", _dbConnection);
         System.out.println("User \"" + username + "\" added to database");
+        return true;
     }
 
     private boolean userExists(String username) throws DbException {
