@@ -3,27 +3,22 @@ import { render } from "react-dom";
 import { sendPOST } from "../rest/rest.js"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
-//import { Redirect } from "react-router-dom";
-//import history from "../components/history.js"
 import { browserHistory } from "react-router";
 
 import { connect } from "react-redux";
 import { logged_in } from "../redux/actions.js";
 
 
-function Startscreen({logged_in}) {
+function Startscreen (props) {
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [registerUsername, setRegisterUsername] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
-    //const [token, setToken] = useState("");
-    const [response, setResponse] = useState("");
-    const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") || "");
-
-    function renderRedirect() {
-        if (loggedIn) { // TODO - LOG state and check through global state if logged in or not
-            browserHistory.push("/profile");
-        }
+ 
+    const [response, setResponse] = useState(""); 
+    
+    if(props.loggedIn) {
+        browserHistory.push("/profile");
     }
 
     function validateForm(username, password) {
@@ -39,15 +34,9 @@ function Startscreen({logged_in}) {
         sendPOST("auth/newsession", body).then(
             data => {
                 setResponse("");
-                //setToken(data.jwt);
-                //setLoggedIn(true);
-                /*localStorage.setItem("username", loginUsername);
-                localStorage.setItem("token", data.jwt);
-                localStorage.setItem("loggedIn", true);*/
-                var data;
-                data.username = loginUsername;
-                data.token = data.jwt;
-                logged_in(data);
+                var loginData = {username: loginUsername, token: data.jwt};
+                props.dispatch(logged_in(loginData));
+                browserHistory.push("/profile")
             }
             ).catch(error => {
                 {setResponse(error.message)};
@@ -64,7 +53,7 @@ function Startscreen({logged_in}) {
         }
         sendPOST("newuser", body).then(
             data => {
-                setResponse("");
+                setResponse(""); // TODO - FInish
                 console.log(data);
             }
             ).catch(error => {
@@ -72,10 +61,8 @@ function Startscreen({logged_in}) {
              });;
         event.preventDefault();
     }
-
     return (
         <div className="Startscreen">
-            {renderRedirect()}
             <h1>CineCollections</h1>
             <div className="Login">
                 <h2>Login</h2>
@@ -129,13 +116,13 @@ function Startscreen({logged_in}) {
         </div>
     );
 }
-render(<Startscreen />, document.getElementById('root'));
 
-export default connect(
-    state => (//{
-        /*loggedIn: state.loginState.loggedIn,
-        token: state.loginState.token,
-        username: state.loginState.username}),*/
-        null,
-        {logged_in})
-)(Startscreen);
+function mapStateToProps(state) {
+    return {
+        loggedIn: state.loginState.loggedIn
+        //token: state.loginState.token,
+        //username: state.loginState.username,
+    }
+}
+
+export default connect(mapStateToProps)(Startscreen);

@@ -8,8 +8,7 @@ import App from './App';
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 import { Router, Route, browserHistory } from "react-router";
-import {syncHistoryWithStore, routerReducer } from "react-router-redux";
-//import history from "./components/history";
+import { syncHistoryWithStore, routerReducer } from "react-router-redux";
 import * as reducers from "./redux/reducers";
 
 
@@ -24,19 +23,16 @@ const store = createStore(
   })
 );
 
+store.subscribe(() => 
+    console.log(store.getState()) // TODO - debug, remove
+); 
+
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
-  /*<React.StrictMode>
-    <Router history={history}>
-      <App />
-    </Router>
-  </React.StrictMode>*/
-
   <Provider store={store}>
     <Router history={history}>
       <Route exact path="/" component={App} />
-      <Route exact path="/start" exact component={Startscreen} />
       <Route exact path="/profile" exact component={Profile} />
     </Router>
   </Provider>

@@ -1,4 +1,2 @@
-import loginState from "./loginReducer.js";
-
-export default loginState;
+export {default as loginState} from "./loginReducer.js";
 

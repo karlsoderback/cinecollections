@@ -1,8 +1,4 @@
-import { LOGGED_IN } from "./actionTypes.js";
-
-let loggedIn = false;
-let token = "";
-let username ="";
+import { LOGGED_IN, LOGGED_OUT } from "./actionTypes.js";
 
 export function logged_in(data) {
     return {
@@ -10,3 +6,10 @@ export function logged_in(data) {
         data
     }
 }
+
+export function logged_out() {
+    return {
+        type: LOGGED_OUT
+    }
+}
+

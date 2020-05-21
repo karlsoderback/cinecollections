@@ -1,19 +1,36 @@
-import React, { Component, useState } from "react";
-import { render } from "react-dom";
-import history from "../components/history.js";
+import React from "react";
+import { browserHistory } from "react-router";
 
-export default function Profile(props) {
+import { connect } from "react-redux";
+import { logged_out } from "../redux/actions.js";
+import { loginState } from "../redux/reducers/index.js";
+
+function Profile(props) {
 
     function logOut() {
-        localStorage.clear();
-        history.push("/start");
+        props.dispatch(logged_out());
+        browserHistory.push("/");
+    }
+    function home(){
+        browserHistory.push("/");
     }
 
     return (
         <div className="profile">
-            <h1>Hello world</h1>
+            <h1>{props.username}</h1>
             <button onClick={logOut}>Log out</button>
+            <button onClick={home}>Home</button>
         </div>
     );
 }
-render(<Profile />, document.getElementById('root'));
+
+function mapStateToProps(state) {
+    return {
+        //loggedIn: state.loginState.loggedIn,
+        //token: state.loginState.token,
+        username: state.loginState.username,
+    }
+}
+
+export default connect(mapStateToProps)(Profile);
+
