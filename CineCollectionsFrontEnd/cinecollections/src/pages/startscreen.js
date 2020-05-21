@@ -1,5 +1,4 @@
-import React, { useEffect , useState } from "react";
-import { render } from "react-dom";
+import React, { useState } from "react";
 import { sendPOST } from "../rest/rest.js"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
@@ -125,8 +124,6 @@ function Startscreen (props) {
 function mapStateToProps(state) {
     return {
         loggedIn: state.loginState.loggedIn
-        //token: state.loginState.token,
-        //username: state.loginState.username,
     }
 }
 

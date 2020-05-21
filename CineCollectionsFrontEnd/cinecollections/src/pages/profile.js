@@ -20,14 +20,17 @@ function Profile(props) {
             <h1>{props.username}</h1>
             <button onClick={logOut}>Log out</button>
             <button onClick={home}>Home</button>
+            <div className="collections">
+                <h2>Collections</h2>
+
+
+            </div>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
-        //loggedIn: state.loginState.loggedIn,
-        //token: state.loginState.token,
         username: state.loginState.username,
     }
 }
