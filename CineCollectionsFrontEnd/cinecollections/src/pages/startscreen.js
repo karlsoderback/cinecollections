@@ -23,7 +23,6 @@ function Startscreen (props) {
     function validateForm(username, password) {
         return username.length > 0 && password.length > 0;
     }
-
     
     function createNewSession(body) {
         sendPOST("auth/newsession", body).then(
@@ -32,8 +31,7 @@ function Startscreen (props) {
                 let loginData = {username: body.username, token: data.jwt};
                 props.dispatch(logged_in(loginData));
                 browserHistory.push("/profile")
-            }
-            ).catch(error => {
+            }).catch(error => {
                 {setResponse(error.message)};
             });
         }
@@ -58,8 +56,7 @@ function Startscreen (props) {
             data => {
                 setResponse("");
                 createNewSession(body);
-            }
-            ).catch(error => {
+            }).catch(error => {
                 {setResponse(error.message)};
             });
         event.preventDefault();
