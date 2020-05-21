@@ -25,23 +25,27 @@ function Startscreen (props) {
         return username.length > 0 && password.length > 0;
     }
 
+    
+    function createNewSession(body) {
+        sendPOST("auth/newsession", body).then(
+            data => {
+                setResponse("");
+                let loginData = {username: body.username, token: data.jwt};
+                props.dispatch(logged_in(loginData));
+                browserHistory.push("/profile")
+            }
+            ).catch(error => {
+                {setResponse(error.message)};
+            });
+        }
+        
     function loginSubmit (event) {
         const body =
         {
             "username": loginUsername,
             "password": loginPassword
         }
-        sendPOST("auth/newsession", body).then(
-            data => {
-                setResponse("");
-                var loginData = {username: loginUsername, token: data.jwt};
-                props.dispatch(logged_in(loginData));
-                browserHistory.push("/profile")
-            }
-            ).catch(error => {
-                {setResponse(error.message)};
-             });
-        
+        createNewSession(body)
         event.preventDefault();
     }
 
@@ -53,14 +57,15 @@ function Startscreen (props) {
         }
         sendPOST("newuser", body).then(
             data => {
-                setResponse(""); // TODO - FInish
-                console.log(data);
+                setResponse("");
+                createNewSession(body);
             }
             ).catch(error => {
                 {setResponse(error.message)};
-             });;
+            });
         event.preventDefault();
     }
+
     return (
         <div className="Startscreen">
             <h1>CineCollections</h1>
