@@ -1,5 +1,5 @@
 import React from "react";
-import { sendPOST } from "../rest/rest.js"
+import { sendBackendPOST } from "../rest/backendAPI.js"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
 import { browserHistory } from "react-router";
@@ -35,7 +35,7 @@ class Startscreen extends React.Component {
     }
     
     createNewSession(body) {
-        sendPOST("auth/newsession", body).then(
+        sendBackendPOST("auth/newsession", body).then(
             data => {
                 this.setState({response: ""});
                 let loginData = {username: body.username, token: data.jwt};
@@ -62,7 +62,7 @@ class Startscreen extends React.Component {
             "username": this.state.registerUsername,
             "password": this.state.registerPassword
         }
-        sendPOST("newuser", body).then(
+        sendBackendPOST("user/new", body).then(
             data => {
                 this.setState({response: ""});
                 this.createNewSession(body);

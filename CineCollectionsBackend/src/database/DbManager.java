@@ -121,6 +121,19 @@ public class DbManager {
         }
     }
 
+    public String getUser(String id) throws DbException {
+        ResultSet rs = executeQuery("SELECT username FROM users WHERE id = \'" + id + "\';", _dbConnection);
+        try {
+            if (rs.next()) {
+                return rs.getString(1);
+            } else {
+                throw new DbException("Could not find user with id: " + id);
+            }
+        } catch (SQLException e) {
+            throw new DbException("Failed to lookup user: " + e.getMessage(), e);
+        }
+    }
+
     public boolean credentialsValid(String username, String password) throws DbException {
         if (userExists(username)) {
             ResultSet rs = executeQuery("SELECT * FROM users WHERE username = \'" + username + "\';", _dbConnection); //Select pw only?

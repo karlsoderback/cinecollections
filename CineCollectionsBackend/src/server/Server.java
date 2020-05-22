@@ -63,16 +63,24 @@ public class Server {
                 get("", ctx -> {
                     ctx.status(200).result("This is the default route of CineCollections");
                 });
-                post("/newuser", ctx -> {
-                    JSONObject jsonObject = new JSONObject(ctx.body());
-                    String username = jsonObject.getString("username");
-                    if (_dbManager.createNewUser(username, jsonObject.getString("password"))) {
-                        System.out.println("New user created");
-                        ctx.status(200).result("Welcome to CineCollections, " + username + "!");
-                    } else {
-                        System.out.println("User already exists");
-                        ctx.status(401).result("A user with username " + username + " already exists");
-                    }
+                path("/user", () -> {
+                    post("/new", ctx -> {
+                        JSONObject jsonObject = new JSONObject(ctx.body());
+                        String username = jsonObject.getString("username");
+                        if (_dbManager.createNewUser(username, jsonObject.getString("password"))) {
+                            System.out.println("New user created");
+                            ctx.status(200).result("Welcome to CineCollections, " + username + "!");
+                        } else {
+                            System.out.println("User already exists");
+                            ctx.status(401).result("A user with username " + username + " already exists");
+                        }
+                    });
+                    get("/get", ctx -> {
+                        String userId = ctx.queryParam("userid");
+                        String username = _dbManager.getUser(userId);
+                        System.out.println("Returning user: " + username);
+                        ctx.status(200).result(username);
+                    });
                 });
                 path("auth", () -> {
                     post("/newsession", generateToken);
