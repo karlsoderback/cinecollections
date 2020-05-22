@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { logged_out } from "../redux/actions.js";
 
 import { sendBackendGET } from "../rest/backendAPI.js"
-import { getMovie } from "../rest/movieAPI.js";
+import { getFilm, getPoster } from "../rest/movieAPI.js";
 
 class Profile extends React.Component {
     constructor(props) {
@@ -14,7 +14,8 @@ class Profile extends React.Component {
             myCollections: [],
             subCollections: [],
             renderMyCollections: [],
-            renderSubCollections:[]
+            renderSubCollections:[],
+            posters: new Object()
         };
 
         this.logOut = this.logOut.bind(this);
@@ -46,20 +47,19 @@ class Profile extends React.Component {
         let retMyCollections = [];
         let retSubCollections = [];
         
-        
         for (let i = 0; i < this.state.myCollections.length; i++) { // Render my collections
             const collection = this.state.myCollections[i];
             
             const fullInfoCollection = await this.getFilmsFullInfoList(collection);
             myCollections.push(fullInfoCollection);
             
-            const filmTitles = this.printFilms(fullInfoCollection); 
-            console.log(filmTitles)
+            const films = this.printFilms(fullInfoCollection); 
+            
             retMyCollections.push(
                 <div key={collection.collection_id}>
                 <h3>{collection.collection_name}</h3>
                 <h4>Films:</h4>
-                {filmTitles}
+                {films}
             </div>);
         }
 
@@ -69,7 +69,7 @@ class Profile extends React.Component {
             const fullInfoCollection = await this.getFilmsFullInfoList(collection);
             subCollections.push(fullInfoCollection);
             
-            const filmTitles = this.printFilms(fullInfoCollection);
+            const films = this.printFilms(fullInfoCollection);
             const creator = await this.getCreator(collection.creator);
             
             retSubCollections.push(
@@ -77,7 +77,7 @@ class Profile extends React.Component {
                     <h3>{collection.collection_name}</h3>
                     <h4>Creator: {creator}</h4>
                     <h4>Films:</h4>
-                    {filmTitles}
+                    {films}
                 </div>);
         }
         
@@ -111,12 +111,23 @@ class Profile extends React.Component {
 
     async getFilmInfo(id) {
         return await new Promise(resolve => {
-            getMovie(id).then(
+            getFilm(id).then(
                 film => {
-                    resolve(film)
+                    resolve(film);
                 }
             )
-        })
+        });
+    }
+
+    async getFilmPoster(id) {
+        return await new Promise(resolve => {
+            getPoster(id).then(
+                poster => {
+                    console.log(poster);
+                    resolve(poster);
+                }
+            )
+        });
     }
 
     async getCreator(userid) {
@@ -132,6 +143,7 @@ class Profile extends React.Component {
     render() {
         return (
             <div className="profile">
+                {this.state.test}
                 <h1>{this.props.username}</h1>
                 <button onClick={this.logOut}>Log out</button>
                 <button onClick={this.home}>Home</button>

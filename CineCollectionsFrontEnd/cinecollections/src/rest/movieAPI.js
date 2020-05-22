@@ -5,7 +5,7 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
 
 
-export function getMovie(id) {
+export function getFilm(id) {
    return fetch(OMDB_URL + "?i=" + id + "&apikey=" + API_KEY,
    {
       method: 'GET',
@@ -28,7 +28,7 @@ export function getMovie(id) {
 }
 
 export function getPoster(id) {
-   return fetch(OMDB_URL + "?i=" + id + "&apikey=" + API_KEY,
+   return fetch(POSTER_URL + "?i=" + id + "&h=600&apikey=" + API_KEY,
    {
       method: 'GET',
       headers: {
@@ -39,12 +39,7 @@ export function getPoster(id) {
       if (!response.ok) {
         return response.text().then(text => {throw Error(text)});
       } else {
-         const contentType = response.headers.get("content-type");
-         if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json();
-         } else {
-            return response.text();
-         }
+         return response.blob();
       }
    });
 }
