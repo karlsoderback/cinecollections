@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { sendPOST } from "../rest/rest.js"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
@@ -8,114 +8,126 @@ import { connect } from "react-redux";
 import { logged_in } from "../redux/actions.js";
 
 
-function Startscreen (props) {
-    const [loginUsername, setLoginUsername] = useState("");
-    const [loginPassword, setLoginPassword] = useState("");
-    const [registerUsername, setRegisterUsername] = useState("");
-    const [registerPassword, setRegisterPassword] = useState("");
- 
-    const [response, setResponse] = useState(""); 
+class Startscreen extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loginUsername: "",
+            loginPassword: "",
+            registerUsername: "",
+            registerPassword: "",  
+            response: "",
+        };
+
+        this.createNewSession = this.createNewSession.bind(this);
+        this.loginSubmit = this.loginSubmit.bind(this);
+        this.registerSubmit = this.registerSubmit.bind(this);
+    }
     
-    if(props.loggedIn) {
-        browserHistory.push("/profile");
+    componentDidMount() {
+        if(this.props.loggedIn) {
+            browserHistory.push("/profile");
+        }
     }
 
-    function validateForm(username, password) {
+    validateForm(username, password) {
         return username.length > 0 && password.length > 0;
     }
     
-    function createNewSession(body) {
+    createNewSession(body) {
         sendPOST("auth/newsession", body).then(
             data => {
-                setResponse("");
+                this.setState({response: ""});
                 let loginData = {username: body.username, token: data.jwt};
-                props.dispatch(logged_in(loginData));
+                this.props.dispatch(logged_in(loginData));
                 browserHistory.push("/profile")
             }).catch(error => {
-                {setResponse(error.message)};
+                {this.setState({response: error.message})};
             });
         }
         
-    function loginSubmit (event) {
+    loginSubmit (event) {
         const body =
         {
-            "username": loginUsername,
-            "password": loginPassword
+            "username": this.state.loginUsername,
+            "password": this.state.loginPassword
         }
-        createNewSession(body)
+        this.createNewSession(body)
         event.preventDefault();
     }
 
-    function registerSubmit (event) {
+    registerSubmit (event) {
         const body = 
         {
-            "username": registerUsername,
-            "password": registerPassword
+            "username": this.state.registerUsername,
+            "password": this.state.registerPassword
         }
         sendPOST("newuser", body).then(
             data => {
-                setResponse("");
-                createNewSession(body);
+                this.setState({response: ""});
+                this.createNewSession(body);
             }).catch(error => {
-                {setResponse(error.message)};
+                {this.setState({response: error.message})};
             });
         event.preventDefault();
     }
 
-    return (
-        <div className="Startscreen">
-            <h1>CineCollections</h1>
-            <div className="Login">
-                <h2>Login</h2>
-                <form onSubmit={loginSubmit}>
-                    <FormGroup controlId="loginUsername" bssize="large">
-                        <FormControl 
-                            autoFocus
-                            type="text"
-                            value={loginUsername}
-                            onChange={e => setLoginUsername(e.target.value)}
-                        />
-                    </FormGroup>
-                    <FormGroup controlId="loginPassword" bssize="large">
-                        <FormControl 
-                            type="password"
-                            value={loginPassword}
-                            onChange={e => setLoginPassword(e.target.value)}
-                        />
-                    </FormGroup>
-                    <Button block bssize="large" disabled={!validateForm(loginUsername, loginPassword)} type="submit">
-                        Login
-                    </Button>
-                </form>
-            </div>
-            <div className="Register">
-                <h2>Register</h2>
-                <form onSubmit={registerSubmit}>
-                    <FormGroup controlId="registerUsername" bssize="large">
+    render(){
+        return (
+            <div className="Startscreen">
+                <h1>CineCollections</h1>
+                <div className="Login">
+                    <h2>Login</h2>
+                    <form onSubmit={this.loginSubmit}>
+                        <FormGroup controlId="loginUsername" bssize="large">
                             <FormControl 
                                 autoFocus
                                 type="text"
-                                value={registerUsername}
-                                onChange={e => setRegisterUsername(e.target.value)}
+                                value={this.state.loginUsername}
+                                onChange={e => this.setState({loginUsername: e.target.value})}
                             />
                         </FormGroup>
-                        <FormGroup controlId="registerPassword" bssize="large">
+                        <FormGroup controlId="loginPassword" bssize="large">
                             <FormControl 
                                 type="password"
-                                value={registerPassword}
-                                onChange={e => setRegisterPassword(e.target.value)}
+                                value={this.state.loginPassword}
+                                onChange={e => this.setState({loginPassword: e.target.value})}
                             />
                         </FormGroup>
-                        <Button block bssize="large" disabled={!validateForm(registerUsername, registerPassword)} type="submit">
-                            Register
+                        <Button block bssize="large" disabled={!this.validateForm(this.state.loginUsername, this.state.loginPassword)} type="submit">
+                            Login
                         </Button>
-                </form>
+                    </form>
+                </div>
+                <div className="Register">
+                    <h2>Register</h2>
+                    <form onSubmit={this.registerSubmit}>
+                        <FormGroup controlId="registerUsername" bssize="large">
+                                <FormControl 
+                                    autoFocus
+                                    type="text"
+                                    value={this.state.registerUsername}
+                                    onChange={e => this.setState({registerUsername: e.target.value})}
+                                />
+                            </FormGroup>
+                            <FormGroup controlId="registerPassword" bssize="large">
+                                <FormControl 
+                                    type="password"
+                                    value={this.state.registerPassword}
+                                    onChange={e => this.setState({registerPassword: e.target.value})}
+                                />
+                            </FormGroup>
+                            <Button block bssize="large" disabled={!this.validateForm(this.state.registerUsername, this.state.registerPassword)} type="submit">
+                                Register
+                            </Button>
+                    </form>
+                </div>
+                <div className="response">
+                    {Parser(this.state.response)}
+                </div>
             </div>
-            <div className="response">
-                {Parser(response)}
-            </div>
-        </div>
-    );
+        );
+    }
 }
 
 function mapStateToProps(state) {
