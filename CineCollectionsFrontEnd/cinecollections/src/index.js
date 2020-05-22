@@ -11,8 +11,6 @@ import { Router, Route, browserHistory } from "react-router";
 import { syncHistoryWithStore, routerReducer } from "react-router-redux";
 import * as reducers from "./redux/reducers";
 
-
-import Startscreen from "./pages/startscreen.js";
 import Profile from "./pages/profile.js";
 
 
