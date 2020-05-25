@@ -11,7 +11,7 @@ import { Router, Route, browserHistory } from "react-router";
 import { syncHistoryWithStore, routerReducer } from "react-router-redux";
 import * as reducers from "./redux/reducers";
 
-import Profile from "./pages/profile.js";
+import Profile from "./components/profile.js";
 
 
 const store = createStore(
