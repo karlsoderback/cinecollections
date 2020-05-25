@@ -1,3 +1,5 @@
 Hash passwords
 
 Save state between refreshes
+
+Force push of .env file to git
