@@ -89,8 +89,9 @@ public class Server {
                     post("/create", ctx -> {
                         String username = ctx.queryParam("username");
                         if (requestIsAuthorized(ctx, username)) {
-                            JSONObject collection = new JSONObject(ctx.body()).getJSONObject("collection");
+                            JSONObject collection = new JSONObject(ctx.body());
                             int collectionId = _dbManager.createCollection(collection, username);
+                            System.out.println("Succesfully saved" + collection.getString("collection_name"));
                             ctx.result("Collection: \"" + collection.getString("collection_name") + "\" was saved!")
                                     .status(200)
                                     .header("collection_id", String.valueOf(collectionId));
