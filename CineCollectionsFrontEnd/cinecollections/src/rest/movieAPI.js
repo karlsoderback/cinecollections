@@ -5,9 +5,9 @@ const API_KEY = "dc6335dd"; //process.env.REACT_APP_OMDB_API_KEY;
 
 // TODO - Add const for postersize
 
+// TODO - Add method for getting film by title
 
-
-export function getFilm(id) {
+export function getFilmById(id) {
    return fetch(OMDB_URL + "?i=" + id + "&apikey=" + API_KEY,
    {
       method: 'GET',

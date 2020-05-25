@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { logged_out } from "../redux/actions";
 
 import { sendBackendGET } from "../rest/backendAPI"
-import { getFilm, getPoster } from "../rest/movieAPI";
+import { getFilmById, getPoster } from "../rest/movieAPI";
 
 import Search from "./search";
 
@@ -117,7 +117,7 @@ class Profile extends React.Component {
 
     async getFilmFullInfo(id) {
         return await new Promise(resolve => {
-            getFilm(id).then(
+            getFilmById(id).then(
                 film => {
                     resolve(film);
                 }

@@ -10,12 +10,14 @@ class Search extends React.Component {
         
         this.state = {
             filmInput: "",
-            userInput: ""
+            userInput: "",
+            filmResult: "",
+            userResult: "",
         }
     }
 
     searchFilm () {
-
+        
     }  
 
     updateFilmSearchField = (event) => {
