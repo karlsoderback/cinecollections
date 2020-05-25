@@ -1,4 +1,5 @@
-const baseURL = process.env.REACT_APP_BACKEND_API_ADDRESS + ":" + process.env.REACT_APP_BACKEND_API_PORT + "/";
+//const baseURL = process.env.REACT_APP_BACKEND_API_ADDRESS + ":" + process.env.REACT_APP_BACKEND_API_PORT + "/";
+const baseURL = "http://localhost:7000/"
 
 export function sendBackendPOST(url, body) {
          return fetch(baseURL + url,

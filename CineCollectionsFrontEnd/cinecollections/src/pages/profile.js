@@ -50,10 +50,10 @@ class Profile extends React.Component {
         for (let i = 0; i < this.state.myCollections.length; i++) { // Render my collections
             const collection = this.state.myCollections[i];
             
-            const fullInfoCollection = await this.getFilmsFullInfoList(collection);
+            const fullInfoCollection = await this.generateDetailedFilmList(collection);
             myCollections.push(fullInfoCollection);
             
-            const films = this.printFilms(fullInfoCollection); 
+            const films = this.renderFilms(fullInfoCollection); 
             
             retMyCollections.push(
                 <div key={collection.collection_id}>
@@ -66,10 +66,10 @@ class Profile extends React.Component {
         for (let i = 0; i < this.state.subCollections.length; i++) { // Render subscribed collections
             const collection = this.state.subCollections[i];
             
-            const fullInfoCollection = await this.getFilmsFullInfoList(collection);
+            const fullInfoCollection = await this.generateDetailedFilmList(collection);
             subCollections.push(fullInfoCollection);
             
-            const films = this.printFilms(fullInfoCollection);
+            const films = this.renderFilms(fullInfoCollection);
             const creator = await this.getCreator(collection.creator);
             
             retSubCollections.push(
@@ -88,12 +88,14 @@ class Profile extends React.Component {
         this.setState({renderSubCollections: retSubCollections});
     }
 
-    printFilms(fullInfoCollection) {
+    renderFilms(fullInfoCollection) {
         let filmInfo = [];
         for (let i = 0; i < fullInfoCollection.length; i++) {
             let film = fullInfoCollection[i];
+            let posterURL = URL.createObjectURL(film.poster);
             filmInfo.push(
                 <div key={i}>
+                    <img src ={posterURL}></img>
                     <li>{film.Title}</li>
                 </div>
             )
@@ -101,15 +103,18 @@ class Profile extends React.Component {
         return filmInfo;
     }
 
-    async getFilmsFullInfoList(collection) {
+    async generateDetailedFilmList(collection) {
         let films = []
         for (let i = 0; i < collection.films.length; i++) {
-            films.push(await this.getFilmInfo(collection.films[i]));
+            let id = collection.films[i];
+            let filmInfo = await this.getFilmFullInfo(id);
+            filmInfo.poster = await this.getFilmPoster(id)
+            films.push(filmInfo);
         }
         return films;
     }
 
-    async getFilmInfo(id) {
+    async getFilmFullInfo(id) {
         return await new Promise(resolve => {
             getFilm(id).then(
                 film => {
