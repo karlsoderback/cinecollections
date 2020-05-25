@@ -1,11 +1,11 @@
 import React from "react";
-import { sendBackendPOST } from "../rest/backendAPI.js"
+import { sendBackendPOST } from "../rest/backendAPI"
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Parser from "html-react-parser";
 import { browserHistory } from "react-router";
 
 import { connect } from "react-redux";
-import { logged_in } from "../redux/actions.js";
+import { logged_in } from "../redux/actions";
 
 
 class Startscreen extends React.Component {

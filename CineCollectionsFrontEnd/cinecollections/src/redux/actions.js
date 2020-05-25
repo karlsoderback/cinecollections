@@ -1,4 +1,4 @@
-import { LOGGED_IN, LOGGED_OUT } from "./actionTypes.js";
+import { LOGGED_IN, LOGGED_OUT } from "./actionTypes";
 
 export function logged_in(data) {
     return {

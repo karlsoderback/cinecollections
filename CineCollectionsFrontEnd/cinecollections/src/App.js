@@ -1,5 +1,5 @@
 import React from "react";
-import Startscreen from "./components/startscreen.js";
+import Startscreen from "./components/startscreen";
 
 
 class App extends React.Component {

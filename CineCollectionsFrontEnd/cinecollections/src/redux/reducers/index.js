@@ -1,2 +1,2 @@
-export {default as loginState} from "./loginReducer.js";
+export {default as loginState} from "./loginReducer";
 

@@ -2,10 +2,12 @@ import React from "react";
 
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
-import { logged_out } from "../redux/actions.js";
+import { logged_out } from "../redux/actions";
 
-import { sendBackendGET } from "../rest/backendAPI.js"
-import { getFilm, getPoster } from "../rest/movieAPI.js";
+import { sendBackendGET } from "../rest/backendAPI"
+import { getFilm, getPoster } from "../rest/movieAPI";
+
+import Search from "./search";
 
 class Profile extends React.Component {
     constructor(props) {
@@ -15,7 +17,6 @@ class Profile extends React.Component {
             subCollections: [],
             renderMyCollections: [],
             renderSubCollections:[],
-            posters: new Object()
         };
 
         this.logOut = this.logOut.bind(this);
@@ -162,6 +163,7 @@ class Profile extends React.Component {
                         {this.state.renderSubCollections}
                     </div>
                 </div>
+                <Search />
             </div>
         );
     }

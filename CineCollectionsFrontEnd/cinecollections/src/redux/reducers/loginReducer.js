@@ -1,7 +1,7 @@
 import {
     LOGGED_IN,
     LOGGED_OUT
-} from "../actionTypes.js";
+} from "../actionTypes";
 
 const initialState = {
     loggedIn: false,
