@@ -51,7 +51,7 @@ export function getFilmByTitle(title) {
    });
 }
 
-export function getPoster(id) {
+function getPoster(id) {
    return fetch(POSTER_URL + "?i=" + id + "&h=200&apikey=" + API_KEY,
    {
       method: 'GET',
@@ -65,5 +65,15 @@ export function getPoster(id) {
       } else {
          return response.blob();
       }
+   });
+}
+
+export async function getFilmPoster(id) {
+   return await new Promise(resolve => {
+       getPoster(id).then(
+           poster => {
+               resolve(poster);
+           }
+       )
    });
 }

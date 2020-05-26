@@ -2,10 +2,10 @@ import React from "react";
 
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
-import { logged_out } from "../redux/actions";
+import { loggedIn, loggedOut, fetchedCollections } from "../redux/actions";
 
 import { sendBackendGET } from "../rest/backendAPI"
-import { getFilmById, getPoster } from "../rest/movieAPI";
+import { getFilmById, getFilmPoster } from "../rest/movieAPI";
 
 import Search from "./search";
 
@@ -25,17 +25,24 @@ class Profile extends React.Component {
     }
     
     componentDidMount() {
-        sendBackendGET("collection/getallforuser?username=" + this.props.loggedInUser).then(
+        let loggedInUser = this.props.loggedInUser;
+        if (loggedInUser === "" && localStorage.getItem("loggedIn")) {
+            loggedInUser = localStorage.getItem("loggedInUser");
+            let loginData = {username: loggedInUser, token: localStorage.getItem("token")};
+            this.props.dispatch(loggedIn(loginData))
+        }  
+
+        sendBackendGET("collection/getallforuser?username=" + loggedInUser).then(
             data => {
                 this.setState({myCollections: data.my_collections});
-                this.setState({subCollections: data.subscribed_collections});
+                this.setState({subCollections: data.subscribed_collections});  
                 this.renderCollections();
             }
         )
     }
 
     logOut() {
-        this.props.dispatch(logged_out());
+        this.props.dispatch(loggedOut());
         browserHistory.push("/");
     }
     home(){
@@ -87,6 +94,8 @@ class Profile extends React.Component {
         
         this.setState({renderMyCollections: retMyCollections});
         this.setState({renderSubCollections: retSubCollections});
+
+        this.props.dispatch(fetchedCollections({myCollections: myCollections, subCollections: subCollections}));
     }
 
     renderFilms(fullInfoCollection) {
@@ -106,10 +115,13 @@ class Profile extends React.Component {
 
     async generateDetailedFilmList(collection) {
         let films = []
+        films.id = collection.collection_id;
+        films.name = collection.collection_name;
+        films.creator = collection.creator;
         for (let i = 0; i < collection.films.length; i++) {
             let id = collection.films[i];
             let filmInfo = await this.getFilmFullInfo(id);
-            filmInfo.poster = await this.getFilmPoster(id)
+            filmInfo.poster = await getFilmPoster(id)
             films.push(filmInfo);
         }
         return films;
@@ -120,17 +132,6 @@ class Profile extends React.Component {
             getFilmById(id).then(
                 film => {
                     resolve(film);
-                }
-            )
-        });
-    }
-
-    async getFilmPoster(id) {
-        return await new Promise(resolve => {
-            getPoster(id).then(
-                poster => {
-                    console.log(poster);
-                    resolve(poster);
                 }
             )
         });
@@ -149,6 +150,7 @@ class Profile extends React.Component {
     render() {
         return (
             <div className="profile">
+                <Search />
                 {this.state.test}
                 <h1>{this.props.loggedInUser}</h1>
                 <button onClick={this.logOut}>Log out</button>
@@ -163,7 +165,6 @@ class Profile extends React.Component {
                         {this.state.renderSubCollections}
                     </div>
                 </div>
-                <Search />
             </div>
         );
     }
