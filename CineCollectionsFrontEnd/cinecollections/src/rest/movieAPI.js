@@ -1,7 +1,7 @@
-const OMDB_URL = "http://www.omdbapi.com/"; //process.env.REACT_APP_OMDB_API_ADDRESS;
-const POSTER_URL = " http://img.omdbapi.com/"; // process.env.REACT_APP_POSTER_API_ADDRESS;
+const OMDB_URL = process.env.REACT_APP_OMDB_API_ADDRESS;
+const POSTER_URL = process.env.REACT_APP_POSTER_API_ADDRESS;
 
-const API_KEY = "dc6335dd"; //process.env.REACT_APP_OMDB_API_KEY;
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
 // TODO - Add const for postersize
 
