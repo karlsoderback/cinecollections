@@ -41,9 +41,9 @@ public class CineCollection {
     public String serialize() {
         StringBuilder serialized = new StringBuilder();
         serialized.append("     {\n")
-                .append("       \"collection_id\":\"").append(_collectionId).append("\"\n")
-                .append("       \"creator\":\"").append(_creator).append("\"\n")
-                .append("       \"collection_name\":\"").append(_collectionName).append("\"\n")
+                .append("       \"collection_id\":\"").append(_collectionId).append("\",\n")
+                .append("       \"creator\":\"").append(_creator).append("\",\n")
+                .append("       \"collection_name\":\"").append(_collectionName).append("\",\n")
                 .append("       \"films\": [ ");
 
         for (String film : _films) {

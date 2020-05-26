@@ -1,6 +1,6 @@
 const baseURL = process.env.REACT_APP_BACKEND_API_ADDRESS + ":" + process.env.REACT_APP_BACKEND_API_PORT + "/";
 
-export function sendPOST(url, body) {
+export function sendBackendPOST(url, body) {
          return fetch(baseURL + url,
           {
              method: 'POST',
@@ -24,7 +24,7 @@ export function sendPOST(url, body) {
           });
     }
     
-export function sendGET(url) {
+export function sendBackendGET(url) {
        return fetch(baseURL + url,
           {
              method: 'GET',
@@ -34,9 +34,14 @@ export function sendGET(url) {
              },
              mode: 'cors',
           }).then(response => {
-             if (!response.ok) {
-                throw response.statusText;
-             }
-             return response.json();
+            if (!response.ok) {
+               return response.text().then(text => {throw Error(text)});
+            }
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+               return response.json();
+            } else {
+               return response.text();
+            }
           });
     }
