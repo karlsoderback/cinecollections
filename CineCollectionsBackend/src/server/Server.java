@@ -86,15 +86,32 @@ public class Server {
                     post("/newsession", generateToken);
                 });
                 path("collection", () -> {
-                    post("/create", ctx -> {
+                    get("/create", ctx -> {
                         String username = ctx.queryParam("username");
                         if (requestIsAuthorized(ctx, username)) {
-                            JSONObject collection = new JSONObject(ctx.body());
-                            int collectionId = _dbManager.createCollection(collection, username);
-                            System.out.println("Succesfully saved" + collection.getString("collection_name"));
-                            ctx.result("Collection: \"" + collection.getString("collection_name") + "\" was saved!")
+                            String collectionName = ctx.queryParam("collection_name");
+                            int collectionId = _dbManager.createCollection(collectionName, username);
+                            System.out.println("Succesfully created " + collectionName);
+                            ctx.result("Collection: \"" + collectionName + "\" was created!")
                                     .status(200)
                                     .header("collection_id", String.valueOf(collectionId));
+                        } else {
+                            ctx.result("Token is not valid for user: " + username).status(403);
+                        }
+                    });
+                    post("/add", ctx -> {
+                        String username = ctx.queryParam("username");
+                        if (requestIsAuthorized(ctx, username)) {
+                            JSONObject body = new JSONObject(ctx.body());
+                            String filmId = body.getString("film_id");
+                            String collectionId = body.getString("collection_id");
+                            if(_dbManager.addToCollection(collectionId, filmId, username)){
+                                System.out.println("Succesfully added: " + filmId + " to collectionId: " + collectionId);
+                                ctx.result(filmId + " was added to collection " + collectionId)
+                                        .status(200);
+                            } else {
+                                System.err.println("Failed to add filmId:" + filmId + " to collectionId: " + collectionId);
+                            }
                         } else {
                             ctx.result("Token is not valid for user: " + username).status(403);
                         }

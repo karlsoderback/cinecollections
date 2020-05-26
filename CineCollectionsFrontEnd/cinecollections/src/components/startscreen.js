@@ -5,7 +5,7 @@ import Parser from "html-react-parser";
 import { browserHistory } from "react-router";
 
 import { connect } from "react-redux";
-import { logged_in } from "../redux/actions";
+import { loggedIn } from "../redux/actions";
 
 
 class Startscreen extends React.Component {
@@ -27,6 +27,10 @@ class Startscreen extends React.Component {
     componentDidMount() {
         if(this.props.loggedIn) {
             browserHistory.push("/profile");
+        } else if(localStorage.getItem("loggedIn")) {
+            let loginData = {username: localStorage.getItem("loggedInUser"), token: localStorage.getItem("token")};
+            this.props.dispatch(loggedIn(loginData))
+            browserHistory.push("/profile");
         }
     }
 
@@ -39,7 +43,7 @@ class Startscreen extends React.Component {
             data => {
                 this.setState({response: ""});
                 let loginData = {username: body.username, token: data.jwt};
-                this.props.dispatch(logged_in(loginData));
+                this.props.dispatch(loggedIn(loginData));
                 browserHistory.push("/profile")
             }).catch(error => {
                 {this.setState({response: error.message})};

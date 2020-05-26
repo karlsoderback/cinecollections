@@ -177,7 +177,7 @@ public class DbManager {
         return false;
     }
 
-    public int createCollection(JSONObject collection, String creator) throws DbException {
+    public int createCollection(JSONObject collection, String creator) throws DbException {  // TODO - Maybe delete, deprecated method
         int creatorId = getUserId(creator);
         String collectionName = collection.getString("collection_name");
         JSONArray filmsJSON = collection.getJSONArray("films");
@@ -200,6 +200,60 @@ public class DbManager {
             throw new DbException(e.getMessage(), e);
         }
         return -1;
+    }
+
+    public int createCollection(String collectionName, String creator) throws DbException {
+        int creatorId = getUserId(creator);
+        String sql = "INSERT INTO collections(creator, collection_name) VALUES (?, ?) RETURNING collection_id";
+
+        try {
+            PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+            pstmt.setInt(1, creatorId);
+            pstmt.setString(2, collectionName);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage(), e);
+        }
+        return -1;
+    }
+
+    public boolean addToCollection(String collectionId, String filmId, String username) throws DbException {
+        if (userExists(username)) {
+            int userId = getUserId(username);
+            if (getCollectionCreator(collectionId) == userId) {
+                try {
+                    ResultSet rs = executeQuery("SELECT films FROM collections WHERE collection_id = \'" + collectionId + "\'", _dbConnection);
+                    String[] films = new String[1];
+                    if (rs.next()) {
+                        Array arr = rs.getArray(1);
+                        if (arr != null) {
+                            String[] tmp = (String[]) arr.getArray();
+                            films = new String[tmp.length + 1];
+                            for (int i = 0; i < tmp.length; i++) {
+                                films[i] = tmp[i];
+                            }
+                            films[films.length - 1] = filmId;
+                        } else {
+                            films[0] = filmId;
+                        }
+                    }
+                    String sql = "UPDATE collections SET films = (?) WHERE collection_id = \'" + collectionId + "\';";
+                    PreparedStatement pstmt = _dbConnection.prepareStatement(sql);
+                    pstmt.setArray(1, _dbConnection.createArrayOf("TEXT", films));
+                    pstmt.executeUpdate();
+                    return true;
+                } catch (SQLException e) {
+                    throw new DbException(e.getMessage(), e);
+                }
+            } else {
+                throw new DbException("Can't add movies to other users collections!");
+            }
+        } else {
+            throw new DbException("User " + username + " does not exist in the database!");
+        }
     }
 
     private int getUserId(String username) throws DbException {
