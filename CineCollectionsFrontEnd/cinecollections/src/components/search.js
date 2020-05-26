@@ -1,8 +1,9 @@
 import React from "react";
+import Parser from "html-react-parser";
 
 import { connect } from "react-redux";
 
-import { getFilm } from "../rest/movieAPI";
+import { getFilmByTitle } from "../rest/movieAPI";
 
 class Search extends React.Component {
     constructor(props) {
@@ -13,22 +14,59 @@ class Search extends React.Component {
             userInput: "",
             filmResult: "",
             userResult: "",
+            response: ""
         }
+
+        this.searchFilm = this.searchFilm.bind(this);
     }
 
-    searchFilm () {
-        
+    async searchFilm () {
+        let result = await this.searchFilmTitle(this.state.filmInput);
+        if (result.Response === "False") {
+            this.setState({response: "No results found"});
+        } else {
+            this.setState({response: ""});
+            let filmPrint = 
+                "Title: " + result.Title + "<br>" +
+                "Released: " + result.Year + "<br>" +
+                "Directed by: " + result.Director + "<br>" +
+                "Genre: " + result.Genre;
+            
+            this.setState({filmResult: filmPrint});
+            console.log(this.state.filmResult)
+        }
     }  
 
-    updateFilmSearchField = (event) => {
-        this.setState({filmInput: event.target.value});
+    async searchFilmTitle(title) {
+        return await new Promise(resolve => {
+            getFilmByTitle(title).then(
+                film => {
+                    resolve(film);
+                }
+            )
+        });
+    }
+
+    handleKeyPress(e) {
+        if (e.key === "Enter") {
+            this.searchFilm();
+        }
     }
 
     render() {
         return (
-            <div>
+            <div className="Search">
                 <button onClick={this.searchFilm}>Search Film by Title</button>
-                <input type="text" value ={this.props.filmInput} onChange={this.searchfilm}/>
+                <input 
+                    type="text" 
+                    value ={this.state.filmInput} 
+                    onChange={e => this.setState({filmInput: e.target.value})} 
+                    onKeyUp={this.handleKeyPress.bind(this)}
+                />
+                <div className="filmSearchResult">
+                    {Parser(this.state.filmResult)}
+                    {Parser(this.state.response)}
+                </div>
             </div>
         );
     }

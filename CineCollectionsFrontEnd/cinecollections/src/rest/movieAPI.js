@@ -29,6 +29,28 @@ export function getFilmById(id) {
    });
 }
 
+export function getFilmByTitle(title) {
+   return fetch(OMDB_URL + "?t=" + title + "&apikey=" + API_KEY,
+   {
+      method: 'GET',
+      headers: {
+         'Accept': 'application/json',
+      },
+      mode: 'cors',
+   }).then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {throw Error(text)});
+      } else {
+         const contentType = response.headers.get("content-type");
+         if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json();
+         } else {
+            return response.text();
+         }
+      }
+   });
+}
+
 export function getPoster(id) {
    return fetch(POSTER_URL + "?i=" + id + "&h=200&apikey=" + API_KEY,
    {
