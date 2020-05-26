@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
-import { Button, Menu, MenuList, MenuItem } from "@material-ui/core"
+import { Button, Menu, MenuList, MenuItem, Fade } from "@material-ui/core"
 
 class Search extends React.Component {
     constructor(props) {
@@ -18,12 +18,11 @@ class Search extends React.Component {
             userResult: new Object(),
             response: "",
             posterURL: "",
-            menuAnchor: null,
-            collectionMenu: null
+            menuAnchor: null
         }
 
         this.searchFilm = this.searchFilm.bind(this);
-        this.getCollectionMenu = this.getCollectionMenu.bind(this);
+        //this.getCollectionMenu = this.getCollectionMenu.bind(this);
     }
 
     async searchFilm () {
@@ -65,27 +64,16 @@ class Search extends React.Component {
         this.setState({menuAnchor: event.currentTarget});
     }
 
-    handleMenuClose = () => {
+    handleMenuClose = (id) => {
+        if (id) {
+            console.log(id)
+            this.addToCollection(id);
+        }
         this.setState({menuAnchor: null});
     }
 
-    getCollectionMenu () {
-        let menuItems = [];
-        for (var i = 0; i < this.props.myCollections.length; i++) {
-            let collection = this.props.myCollections[i];
-            menuItems.push(
-                <MenuItem key={collection.id} onClick={this.addToCollection(collection.id)}>
-                    {collection.name}
-                </MenuItem>
-            )
-        }
-        return menuItems;
-        //this.setState({collectionMenu: menuItems});
-    }
-
     addToCollection(id) {
-        console.log("adding collection: " + id);
-        this.handleMenuClose();
+        
     }
 
     render() {
@@ -108,9 +96,16 @@ class Search extends React.Component {
                     keepMounted
                     open={Boolean(this.state.menuAnchor)}
                     onClose={this.handleMenuClose}
+                    TransitionComponent={Fade}
                 >
-                    {this.getCollectionMenu}
-                    
+                    Add to Collection:
+                    {this.props.myCollections.map((collection) =>
+                        <MenuItem
+                            key={collection.id} 
+                            value={collection.name}
+                            onClick={this.handleMenuClose.bind(null, collection.id)} 
+                        >{collection.name}</MenuItem>
+                    )}     
                 </Menu>
                 
             </div>
