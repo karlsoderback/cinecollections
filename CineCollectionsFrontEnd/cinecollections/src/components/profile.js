@@ -2,7 +2,7 @@ import React from "react";
 
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
-import { loggedIn, loggedOut, fetchedCollections } from "../redux/actions";
+import { loggedIn, loggedOut, fetchedCollections, collectionsUpdated } from "../redux/actions";
 
 import { sendBackendGET } from "../rest/backendAPI"
 import { getFilmById, getFilmPoster } from "../rest/movieAPI";
@@ -18,10 +18,11 @@ class Profile extends React.Component {
             renderMyCollections: [],
             renderSubCollections:[],
         };
-
+        
         this.logOut = this.logOut.bind(this);
         this.renderCollections = this.renderCollections.bind(this);
         this.getCreator = this.getCreator.bind(this);
+        
     }
     
     componentDidMount() {
@@ -47,6 +48,10 @@ class Profile extends React.Component {
     }
     home(){
         browserHistory.push("/");
+    }
+
+    createCollection(collectionName) {
+
     }
 
     async renderCollections(){   
@@ -147,7 +152,31 @@ class Profile extends React.Component {
         }); 
     }
     
+    /*updateCollections() {
+        sendBackendGET("collection/getallforuser?username=" + this.props.loggedInUser).then(
+            data => {
+                this.setState({myCollections: data.my_collections});
+                this.setState({subCollections: data.subscribed_collections});  
+                this.renderCollections();
+            }
+        )
+        this.renderCollections();
+    }*/
+
+
     render() {
+        /*
+        if(this.props.myCollections != this.state.myCollections) {
+            this.renderCollections();
+        }*/
+        //console.log(this.props.myCollections)
+        //console.log(this.state.myCollections)
+        /*if (this.props.collectionsUpdated) {
+            this.updateCollections();
+            this.props.dispatch(collectionsUpdated(false));
+            this.props.dispatch(fetchedCollections({myCollections: this.state.myCollections, subCollections: this.state.subCollections}));
+        }*/
+
         return (
             <div className="profile">
                 <Search />
@@ -172,7 +201,11 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        loggedInUser: state.loginState.loggedInUser,
+        loggedInUser: state.loginState.loggedInUser
+        //collectionsUpdated: state.collectionState.collectionsUpdated
+        
+        //myCollections: state.collectionState.myCollections,
+        //subCollections: state.collectionState.subCollections
     }
 }
 

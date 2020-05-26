@@ -1,10 +1,11 @@
 import {
-    FETCHED_COLLECTIONS
+    FETCHED_COLLECTIONS, COLLECTIONS_UPDATED
 } from "../actionTypes";
 
 const initialState = {
     myCollections: [],
-    subCollections: []
+    subCollections: [],
+    collectionsUpdated: false
 }
 
 export default function updateCollectionState(state = initialState, action) {
@@ -14,6 +15,10 @@ export default function updateCollectionState(state = initialState, action) {
                 myCollections: action.data.myCollections,
                 subCollections: action.data.subCollections
             })
+        /*case COLLECTIONS_UPDATED:
+            return Object.assign({}, state, {
+                collectionsUpdated: action.data
+            })*/
         default:
             return state;
     }

@@ -8,6 +8,8 @@ import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 import { Button, Menu, MenuList, MenuItem, Fade } from "@material-ui/core"
 import { sendAuthorizedBackendPOST } from "../rest/backendAPI";
 
+import { collectionsUpdated } from "../redux/actions";
+
 class Search extends React.Component {
     constructor(props) {
         super(props);
@@ -17,9 +19,10 @@ class Search extends React.Component {
             userInput: "",
             filmResult: new Object(),
             userResult: new Object(),
-            response: "",
+            filmResponse: "",
             posterURL: "",
-            menuAnchor: null
+            menuAnchor: null,
+            generalResponse: ""
         }
 
         this.searchFilm = this.searchFilm.bind(this);
@@ -35,12 +38,12 @@ class Search extends React.Component {
             let posterURL = URL.createObjectURL(await getFilmPoster(result.imdbID));
             this.setState({posterURL: posterURL});
             let filmPrint = 
-                "Title: " + result.Title + "<br>" +
+                result.Title + "<br>" +
                 "Released: " + result.Year + "<br>" +
                 "Directed by: " + result.Director + "<br>" +
                 "Genre: " + result.Genre;
             
-            this.setState({response: filmPrint});
+            this.setState({filmResponse: filmPrint});
         }
     }  
 
@@ -66,7 +69,6 @@ class Search extends React.Component {
 
     handleMenuClose = (id) => {
         if (id) {
-            console.log(id)
             this.addToCollection(id);
         }
         this.setState({menuAnchor: null});
@@ -77,12 +79,12 @@ class Search extends React.Component {
             "collection_id": id,
             "film_id": this.state.filmResult.imdbID
         }
-        console.log(this.props.token);
         sendAuthorizedBackendPOST("collection/add?username=" + this.props.loggedInUser, body, this.props.token).then(
             data => {
-                console.log(data);
+                this.setState({generalResponse: ("Added " + this.state.filmResult.Title + " to collection!")});
+                //this.props.dispatch(collectionsUpdated(true));
             }).catch(error => {
-                console.log(error);
+                this.setState({generalResponse: error});
         });
     }
 
@@ -98,7 +100,7 @@ class Search extends React.Component {
                 />
                 <Button aria-controls="addMenu" aria-haspopup="true" onClick={this.showAddMenu}>
                     <img src={this.state.posterURL}></img>
-                    {Parser(this.state.response)}
+                    {Parser(this.state.filmResponse)}
                 </Button>
                 <Menu
                     id="addMenu"
@@ -117,21 +119,13 @@ class Search extends React.Component {
                         >{collection.name}</MenuItem>
                     )}     
                 </Menu>
-                
+                <div className="generalResponse">
+                    {Parser(this.state.generalResponse)}
+                </div>
             </div>
         );
     }
 }
-/*<MenuItem onClick={this.getCollectionMenu}>
-                        {this.state.collectionMenu}
-                    </MenuItem>*/
-/*
-<div className="filmSearchResult" onClick={this.addMenu}>
-                    <img src={this.state.posterURL}></img>
-                    <br></br>
-                    {Parser(this.state.response)}
-                </div>
-*/
 
 function mapStateToProps(state) {
     return {
