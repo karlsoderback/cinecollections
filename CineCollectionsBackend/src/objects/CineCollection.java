@@ -45,9 +45,10 @@ public class CineCollection {
                 .append("       \"creator\":\"").append(_creator).append("\",\n")
                 .append("       \"collection_name\":\"").append(_collectionName).append("\",\n")
                 .append("       \"films\": [ ");
-
-        for (String film : _films) {
-            if (_films.indexOf(film) != _films.size() - 1) {
+        System.out.println(_collectionName);
+        for (int i = 0; i< _films.size(); i++) {
+            String film = _films.get(i);
+            if (i != _films.size() - 1) {
                 serialized.append("\"").append(film).append("\", ");
             } else {
                 serialized.append("\"").append(film).append("\" ],\n");
