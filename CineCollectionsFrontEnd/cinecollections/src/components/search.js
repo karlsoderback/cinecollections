@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
 import { Button, Menu, MenuList, MenuItem, Fade } from "@material-ui/core"
-import { sendBackendPOST } from "../rest/backendAPI";
+import { sendAuthorizedBackendPOST } from "../rest/backendAPI";
 
 class Search extends React.Component {
     constructor(props) {
@@ -77,7 +77,8 @@ class Search extends React.Component {
             "collection_id": id,
             "film_id": this.state.filmResult.imdbID
         }
-        sendBackendPOST("collection/add?username=" + this.props.loggedInUser, body).then(
+        console.log(this.props.token);
+        sendAuthorizedBackendPOST("collection/add?username=" + this.props.loggedInUser, body, this.props.token).then(
             data => {
                 console.log(data);
             }).catch(error => {
@@ -135,7 +136,8 @@ class Search extends React.Component {
 function mapStateToProps(state) {
     return {
         myCollections: state.collectionState.myCollections,
-        loggedInUser: state.loginState.loggedInUser
+        loggedInUser: state.loginState.loggedInUser,
+        token: state.loginState.token
     }
 }
 
