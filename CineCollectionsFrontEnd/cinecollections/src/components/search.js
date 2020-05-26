@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
 import { Button, Menu, MenuList, MenuItem, Fade } from "@material-ui/core"
+import { sendBackendPOST } from "../rest/backendAPI";
 
 class Search extends React.Component {
     constructor(props) {
@@ -22,7 +23,6 @@ class Search extends React.Component {
         }
 
         this.searchFilm = this.searchFilm.bind(this);
-        //this.getCollectionMenu = this.getCollectionMenu.bind(this);
     }
 
     async searchFilm () {
@@ -73,7 +73,16 @@ class Search extends React.Component {
     }
 
     addToCollection(id) {
-        
+        const body = {
+            "collection_id": id,
+            "film_id": this.state.filmResult.imdbID
+        }
+        sendBackendPOST("collection/add?username=" + this.props.loggedInUser, body).then(
+            data => {
+                console.log(data);
+            }).catch(error => {
+                console.log(error);
+        });
     }
 
     render() {
@@ -125,7 +134,8 @@ class Search extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        myCollections: state.collectionState.myCollections
+        myCollections: state.collectionState.myCollections,
+        loggedInUser: state.loginState.loggedInUser
     }
 }
 
