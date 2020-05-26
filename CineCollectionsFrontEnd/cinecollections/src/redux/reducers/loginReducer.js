@@ -6,7 +6,7 @@ import {
 const initialState = {
     loggedIn: false,
     token: "",
-    username: ""
+    loggedInUser: ""
 }
 
 export default function updateLoginState(state = initialState, action) {
@@ -15,7 +15,7 @@ export default function updateLoginState(state = initialState, action) {
             return Object.assign({}, state, {
                 loggedIn: true,
                 token: action.data.token,
-                username: action.data.username
+                loggedInUser: action.data.username
             })
         case LOGGED_OUT:
             return initialState;

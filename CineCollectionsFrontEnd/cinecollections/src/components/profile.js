@@ -25,7 +25,7 @@ class Profile extends React.Component {
     }
     
     componentDidMount() {
-        sendBackendGET("collection/getallforuser?username=" + this.props.username).then(
+        sendBackendGET("collection/getallforuser?username=" + this.props.loggedInUser).then(
             data => {
                 this.setState({myCollections: data.my_collections});
                 this.setState({subCollections: data.subscribed_collections});
@@ -150,7 +150,7 @@ class Profile extends React.Component {
         return (
             <div className="profile">
                 {this.state.test}
-                <h1>{this.props.username}</h1>
+                <h1>{this.props.loggedInUser}</h1>
                 <button onClick={this.logOut}>Log out</button>
                 <button onClick={this.home}>Home</button>
                 <div className="collections">
@@ -171,7 +171,7 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        username: state.loginState.username,
+        loggedInUser: state.loginState.loggedInUser,
     }
 }
 
