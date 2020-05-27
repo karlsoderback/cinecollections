@@ -31,7 +31,7 @@ class Profile extends React.Component {
             loggedInUser = localStorage.getItem("loggedInUser");
             let loginData = {username: loggedInUser, token: localStorage.getItem("token")};
             this.props.dispatch(loggedIn(loginData))
-        }  
+        }
 
         sendBackendGET("collection/getallforuser?username=" + loggedInUser).then(
             data => {

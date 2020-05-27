@@ -23,16 +23,6 @@ class Startscreen extends React.Component {
         this.loginSubmit = this.loginSubmit.bind(this);
         this.registerSubmit = this.registerSubmit.bind(this);
     }
-    
-    componentDidMount() {
-        if(this.props.loggedIn) {
-            browserHistory.push("/profile");
-        } else if(localStorage.getItem("loggedIn")) {
-            let loginData = {username: localStorage.getItem("loggedInUser"), token: localStorage.getItem("token")};
-            this.props.dispatch(loggedIn(loginData))
-            browserHistory.push("/profile");
-        }
-    }
 
     validateForm(username, password) {
         return username.length > 0 && password.length > 0;
