@@ -5,7 +5,7 @@ import Parser from "html-react-parser";
 import { browserHistory } from "react-router";
 
 import { connect } from "react-redux";
-import { loggedIn } from "../redux/actions";
+import { loggedIn, displayedUser } from "../redux/actions";
 
 
 class Startscreen extends React.Component {
@@ -22,16 +22,6 @@ class Startscreen extends React.Component {
         this.createNewSession = this.createNewSession.bind(this);
         this.loginSubmit = this.loginSubmit.bind(this);
         this.registerSubmit = this.registerSubmit.bind(this);
-    }
-    
-    componentDidMount() {
-        if(this.props.loggedIn) {
-            browserHistory.push("/profile");
-        } else if(localStorage.getItem("loggedIn")) {
-            let loginData = {username: localStorage.getItem("loggedInUser"), token: localStorage.getItem("token")};
-            this.props.dispatch(loggedIn(loginData))
-            browserHistory.push("/profile");
-        }
     }
 
     validateForm(username, password) {

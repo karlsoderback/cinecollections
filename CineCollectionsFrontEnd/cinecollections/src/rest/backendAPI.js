@@ -71,3 +71,27 @@ export function sendBackendGET(url) {
             }
           });
     }
+
+export function sendAuthorizedBackendGET(url, token) {
+   return fetch(baseURL + url,
+      {
+         method: 'GET',
+         headers: {
+            'Authorization': "Bearer " + token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+         },
+         mode: 'cors',
+      }).then(response => {
+         if (!response.ok) {
+            return response.text().then(text => {throw Error(text)});
+         } else {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+               return response.json();
+            } else {
+               return response.text();
+            }
+         }
+      });
+   }

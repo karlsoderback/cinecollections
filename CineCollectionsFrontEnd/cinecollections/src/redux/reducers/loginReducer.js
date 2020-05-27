@@ -1,12 +1,14 @@
 import {
     LOGGED_IN,
-    LOGGED_OUT
+    LOGGED_OUT,
+    DISPLAYED_USER
 } from "../actionTypes";
 
 const initialState = {
     loggedIn: false,
     token: "",
-    loggedInUser: ""
+    loggedInUser: "",
+    displayedUser: ""
 }
 
 export default function updateLoginState(state = initialState, action) {
@@ -27,6 +29,10 @@ export default function updateLoginState(state = initialState, action) {
         case LOGGED_OUT:
             localStorage.clear();
             return initialState;
+        case DISPLAYED_USER:
+            return Object.assign({}, state, {
+                displayedUser: action.data
+            })
         default:
             return state;
     }

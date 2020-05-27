@@ -10,6 +10,8 @@ import { sendAuthorizedBackendPOST } from "../rest/backendAPI";
 
 import { collectionsUpdated } from "../redux/actions";
 
+//TODO - Add user search
+
 class Search extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +59,7 @@ class Search extends React.Component {
         });
     }
 
-    handleKeyPress(e) {
+    handleKeyPress(e) { // TODO - handle when enter is pressed for other search
         if (e.key === "Enter") {
             this.searchFilm();
         }
@@ -87,7 +89,7 @@ class Search extends React.Component {
                 this.setState({generalResponse: error});
         });
     }
-
+    //TODO - only render search button after displaying results
     render() {
         return (
             <div className="Search">
