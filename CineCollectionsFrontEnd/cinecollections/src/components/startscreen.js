@@ -5,7 +5,7 @@ import Parser from "html-react-parser";
 import { browserHistory } from "react-router";
 
 import { connect } from "react-redux";
-import { loggedIn } from "../redux/actions";
+import { loggedIn, displayedUser } from "../redux/actions";
 
 
 class Startscreen extends React.Component {

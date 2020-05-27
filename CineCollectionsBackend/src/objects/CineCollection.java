@@ -45,7 +45,7 @@ public class CineCollection {
                 .append("       \"creator\":\"").append(_creator).append("\",\n")
                 .append("       \"collection_name\":\"").append(_collectionName).append("\",\n")
                 .append("       \"films\": [ ");
-        System.out.println(_collectionName);
+
         for (int i = 0; i< _films.size(); i++) {
             String film = _films.get(i);
             if (i != _films.size() - 1) {

@@ -2,12 +2,13 @@ import React from "react";
 
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
-import { loggedIn, loggedOut, fetchedCollections, collectionsUpdated } from "../redux/actions";
+import { loggedIn, loggedOut, fetchedCollections, collectionsUpdated, displayedUser } from "../redux/actions";
 
 import { sendBackendGET } from "../rest/backendAPI"
 import { getFilmById, getFilmPoster } from "../rest/movieAPI";
 
 import Search from "./search";
+import CreateCollection from "./createCollection";
 
 class Profile extends React.Component {
     constructor(props) {
@@ -48,10 +49,6 @@ class Profile extends React.Component {
     }
     home(){
         browserHistory.push("/");
-    }
-
-    createCollection(collectionName) {
-
     }
 
     async renderCollections(){   
@@ -176,10 +173,12 @@ class Profile extends React.Component {
             this.props.dispatch(collectionsUpdated(false));
             this.props.dispatch(fetchedCollections({myCollections: this.state.myCollections, subCollections: this.state.subCollections}));
         }*/
+        this.props.dispatch(displayedUser(this.props.loggedInUser))
 
         return (
             <div className="profile">
                 <Search />
+                <CreateCollection />
                 {this.state.test}
                 <h1>{this.props.loggedInUser}</h1>
                 <button onClick={this.logOut}>Log out</button>
@@ -201,7 +200,9 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        loggedInUser: state.loginState.loggedInUser
+        loggedInUser: state.loginState.loggedInUser,
+        displayedUser: state.loginState.displayedUser
+        
         //collectionsUpdated: state.collectionState.collectionsUpdated
         
         //myCollections: state.collectionState.myCollections,

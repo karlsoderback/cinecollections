@@ -1,4 +1,4 @@
-import { LOGGED_IN, LOGGED_OUT, FETCHED_COLLECTIONS, COLLECTIONS_UPDATED } from "./actionTypes";
+import { LOGGED_IN, LOGGED_OUT, FETCHED_COLLECTIONS, DISPLAYED_USER, COLLECTIONS_UPDATED } from "./actionTypes";
 
 export function loggedIn(data) {
     return {
@@ -10,6 +10,13 @@ export function loggedIn(data) {
 export function loggedOut() {
     return {
         type: LOGGED_OUT
+    }
+}
+
+export function displayedUser(data) {
+    return {
+        type: DISPLAYED_USER,
+        data
     }
 }
 
