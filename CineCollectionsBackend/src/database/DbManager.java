@@ -2,6 +2,7 @@ package database;
 
 import exception.DbException;
 import objects.CineCollection;
+import objects.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -372,5 +373,20 @@ public class DbManager {
         } catch (SQLException e) {
             throw new DbException(e.getMessage(), e);
         }
+    }
+
+    public ArrayList<User> getAllUsers() throws DbException {
+        ArrayList<User> users = new ArrayList<>();
+
+        ResultSet rs = executeQuery("SELECT id, username FROM users", _dbConnection);
+        try {
+            while (rs.next()) {
+                User user = new User(rs.getInt(1), rs.getString(2));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            throw new DbException("Failed to get all users: " + e.getMessage(), e);
+        }
+        return users;
     }
 }
