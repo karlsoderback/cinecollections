@@ -30,7 +30,7 @@ class CreateCollection extends React.Component {
         });
     }
 
-    render () {
+    render () { // TODO - Close popup after creation
         let create;
         if(this.props.loggedInUser === this.props.displayedUser) {
             create = 
