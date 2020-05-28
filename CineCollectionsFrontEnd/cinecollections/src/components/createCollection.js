@@ -7,6 +7,8 @@ import Popup from "reactjs-popup";
 
 import { sendAuthorizedBackendGET } from "../rest/backendAPI";
 
+import { collectionsUpdated } from "../redux/actions";
+
 class CreateCollection extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +23,8 @@ class CreateCollection extends React.Component {
     create() { // TODO - validate input not empty
         sendAuthorizedBackendGET("collection/create?username=" + this.props.loggedInUser + "&collection_name=" + this.state.collectionName, this.props.token).then(
             data => {
-                this.setState({response: (this.state.collectionName + " was created!")}); 
+                this.setState({response: (this.state.collectionName + " was created!")});
+                this.props.dispatch(collectionsUpdated()); 
             }).catch(error => {
                 this.setState({response: error});
         });

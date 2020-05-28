@@ -94,7 +94,7 @@ class Search extends React.Component {
         })
     }
 
-    handleKeyPress(e, searchType) { // TODO - handle when enter is pressed for other search
+    handleKeyPress(e, searchType) {
         if (e.key === "Enter") {
             if (searchType === "film") {
                 this.searchFilm();
@@ -125,7 +125,7 @@ class Search extends React.Component {
         sendAuthorizedBackendPOST("collection/add?username=" + this.props.loggedInUser, body, this.props.token).then(
             data => {
                 this.setState({generalResponse: ("Added " + this.state.filmResult.Title + " to collection!")});
-                //this.props.dispatch(collectionsUpdated(true));
+                this.props.dispatch(collectionsUpdated());
             }).catch(error => {
                 this.setState({generalResponse: error});
         });
