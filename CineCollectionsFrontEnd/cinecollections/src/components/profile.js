@@ -18,23 +18,34 @@ class Profile extends React.Component {
             subCollections: [],
             renderMyCollections: [],
             renderSubCollections:[],
+            displayUser: ""
         };
         
         this.logOut = this.logOut.bind(this);
         this.renderCollections = this.renderCollections.bind(this);
         this.getCreator = this.getCreator.bind(this);
-        
+        this.refreshCollections = this.refreshCollections.bind(this);
     }
     
     componentDidMount() {
         let loggedInUser = this.props.loggedInUser;
+        let displayUser = this.props.displayUser;
+        
         if (loggedInUser === "" && localStorage.getItem("loggedIn")) {
             loggedInUser = localStorage.getItem("loggedInUser");
             let loginData = {username: loggedInUser, token: localStorage.getItem("token")};
             this.props.dispatch(loggedIn(loginData))
         }
 
-        sendBackendGET("collection/getallforuser?username=" + loggedInUser).then(
+        if (displayUser === "") {
+            displayUser = loggedInUser;
+            this.props.dispatch(displayedUser(displayUser))
+        }
+        this.refreshCollections(displayUser);
+    }
+
+    refreshCollections(user) {
+        sendBackendGET("collection/getallforuser?username=" + user).then(
             data => {
                 this.setState({myCollections: data.my_collections});
                 this.setState({subCollections: data.subscribed_collections});  
@@ -173,14 +184,17 @@ class Profile extends React.Component {
             this.props.dispatch(collectionsUpdated(false));
             this.props.dispatch(fetchedCollections({myCollections: this.state.myCollections, subCollections: this.state.subCollections}));
         }*/
-        this.props.dispatch(displayedUser(this.props.loggedInUser))
+        if (this.props.displayUser != this.state.displayUser) {
+            this.refreshCollections(this.props.displayUser);
+            this.setState({displayUser: this.props.displayUser});
+        }
 
         return (
             <div className="profile">
                 <Search />
                 <CreateCollection />
                 {this.state.test}
-                <h1>{this.props.loggedInUser}</h1>
+                <h1>{this.props.displayUser}</h1>
                 <button onClick={this.logOut}>Log out</button>
                 <button onClick={this.home}>Home</button>
                 <div className="collections">
@@ -201,7 +215,7 @@ class Profile extends React.Component {
 function mapStateToProps(state) {
     return {
         loggedInUser: state.loginState.loggedInUser,
-        displayedUser: state.loginState.displayedUser
+        displayUser: state.loginState.displayedUser
         
         //collectionsUpdated: state.collectionState.collectionsUpdated
         
