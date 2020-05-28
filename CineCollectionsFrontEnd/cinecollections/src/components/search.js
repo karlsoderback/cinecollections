@@ -127,6 +127,7 @@ class Search extends React.Component {
     }
 
     userClick(user){
+        this.setState({userInput: "", userResult: []});
         this.props.dispatch(displayedUser(user.username));
         browserHistory.push("/profile");
     }
