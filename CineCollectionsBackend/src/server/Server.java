@@ -221,16 +221,16 @@ public class Server {
     }
 
     private String serializeUsers(ArrayList<User> users) {
-        StringBuilder serialized = new StringBuilder("{\n  [\n");
+        StringBuilder serialized = new StringBuilder("{\n  \"users\":\n[\n");
 
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
             if (i != users.size() - 1) {
-                serialized.append("{\n          username:\"" + user.getUsername() + "\",\n" +
-                        "          id:\"" + user.getId() + "\"\n},\n");
+                serialized.append("{\n          \"username\":\"" + user.getUsername() + "\",\n" +
+                        "          \"id\":\"" + user.getId() + "\"\n},\n");
             } else {
-                serialized.append("{\n          username:\"" + user.getUsername() + "\",\n" +
-                        "          id:\"" + user.getId() + "\"\n}\n]\n}");
+                serialized.append("{\n          \"username\":\"" + user.getUsername() + "\",\n" +
+                        "          \"id\":\"" + user.getId() + "\"\n}\n]\n}");
             }
         }
 
