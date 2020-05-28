@@ -81,6 +81,12 @@ public class Server {
                         System.out.println("Returning user: " + username);
                         ctx.status(200).result(username);
                     });
+                    get("getall", ctx -> {
+                        ArrayList<User> users = _dbManager.getAllUsers();
+                        System.out.println("Returning all users");
+
+                        ctx.result(serializeUsers(users)).status(200).contentType("application/json");
+                    });
                 });
                 path("auth", () -> {
                     post("/newsession", generateToken);
@@ -105,7 +111,7 @@ public class Server {
                             JSONObject body = new JSONObject(ctx.body());
                             String filmId = body.getString("film_id");
                             String collectionId = body.getString("collection_id");
-                            if(_dbManager.addToCollection(collectionId, filmId, username)){
+                            if (_dbManager.addToCollection(collectionId, filmId, username)) {
                                 System.out.println("Succesfully added: " + filmId + " to collectionId: " + collectionId);
                                 ctx.result(filmId + " was added to collection " + collectionId)
                                         .status(200);
@@ -138,15 +144,11 @@ public class Server {
                     });
                     get("/getallforuser", ctx -> {
                         String username = ctx.queryParam("username");
-                        //if (requestIsAuthorized(ctx, username)) { // TODO - This route should probably be available without auth
                         ArrayList<CineCollection> myCollections = _dbManager.getMyCollections(username);
                         ArrayList<CineCollection> subscribedCollections = _dbManager.getSubscribedCollections(username);
 
                         ctx.result(serializeCollections(myCollections, subscribedCollections)).status(200).contentType("application/json");
                         System.out.println("Returned all collections related to \"" + username + "\"");
-                        /*} else {
-                            ctx.result("Token is not valid for user: " + username).status(403);
-                        }*/
                     });
                 });
             });
@@ -215,6 +217,23 @@ public class Server {
                 serialized.append(collection.serialize());
             }
         }
+        return serialized.toString();
+    }
+
+    private String serializeUsers(ArrayList<User> users) {
+        StringBuilder serialized = new StringBuilder("{\n  \"users\":\n[\n");
+
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (i != users.size() - 1) {
+                serialized.append("{\n          \"username\":\"" + user.getUsername() + "\",\n" +
+                        "          \"id\":\"" + user.getId() + "\"\n},\n");
+            } else {
+                serialized.append("{\n          \"username\":\"" + user.getUsername() + "\",\n" +
+                        "          \"id\":\"" + user.getId() + "\"\n}\n]\n}");
+            }
+        }
+
         return serialized.toString();
     }
 }

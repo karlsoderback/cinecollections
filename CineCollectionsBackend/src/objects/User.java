@@ -3,12 +3,16 @@ package objects;
 public class User {
     private String _username;
     private String _password;
-    //private final int _id;
+    private Integer _id = 0;
 
-    public User(/*Integer id,*/ String username, String password) {
+    public User(String username, String password) {
         _username = username;
         _password = password;
-        //_id = id;
+    }
+
+    public User(Integer id, String username) {
+        _username = username;
+        _id = id;
     }
 
     public void setUsername(String newUsername) {
@@ -27,8 +31,8 @@ public class User {
         return _password;
     }
 
-    /*public Integer getId() {
+    public Integer getId() {
         return _id;
-    }*/
+    }
 }
 

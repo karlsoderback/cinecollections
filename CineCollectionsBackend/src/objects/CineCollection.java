@@ -46,13 +46,17 @@ public class CineCollection {
                 .append("       \"collection_name\":\"").append(_collectionName).append("\",\n")
                 .append("       \"films\": [ ");
 
-        for (int i = 0; i< _films.size(); i++) {
-            String film = _films.get(i);
-            if (i != _films.size() - 1) {
-                serialized.append("\"").append(film).append("\", ");
-            } else {
-                serialized.append("\"").append(film).append("\" ],\n");
+        if (!_films.isEmpty()) {
+            for (int i = 0; i< _films.size(); i++) {
+                String film = _films.get(i);
+                if (i != _films.size() - 1) {
+                    serialized.append("\"").append(film).append("\", ");
+                } else {
+                    serialized.append("\"").append(film).append("\" ],\n");
+                }
             }
+        } else {
+            serialized.append(("],\n"));
         }
         serialized.append("       \"subscribers\": [ ");
         if (_subscribers.length > 0) {
