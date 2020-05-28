@@ -16,53 +16,30 @@ class Collection extends React.Component {
             data: props.data,
             showCollectionMenu: false,
             menuAnchor: null,
-            viewCollection: false
+            viewCollection: false,
+            films: []
         };
+
+        this.renderFilms();
 
         this.viewCollection = this.viewCollection.bind(this);
     }
 
-    renderFilms(fullInfoCollection) {
-        let filmInfo = [];
-        for (let i = 0; i < fullInfoCollection.length; i++) {
-            let film = fullInfoCollection[i];
+    renderFilms() {
+        let films = [];
+        for (let i = 0; i < this.state.data.films.length; i++) {
+            let film = this.state.data.films[i];
             let posterURL = URL.createObjectURL(film.poster);
 
-            filmInfo.push(
+            films.push(
                 <div key={i}>
                     <img src ={posterURL}></img>
                     <li>{film.Title}</li>
                 </div>
             )
-            return filmInfo;
         }
+        this.setState({films: films});
     }
-
-/*
- create = 
-            <Popup trigger={
-                <Button
-                color="primary"
-                >
-                Create Collection
-                </Button>
-            }
-            position="right center">
-            <div>
-            {this.state.response}
-            <input 
-            type="text" 
-            value ={this.state.collectionName} 
-            onChange={e => this.setState({collectionName: e.target.value})} 
-            />
-            <Button color="primary" onClick={this.create}>Create Collection</Button>
-            </div>
-            </Popup>
-        } else {
-            create = (null);
-        }
-
-    }*/
     
     viewCollection() {
         this.setState({viewCollection: true});
@@ -97,10 +74,7 @@ class Collection extends React.Component {
         }
         let collectionView = (null)
         if (this.state.viewCollection) {
-            collectionView=
-            <Popup>
-                test
-            </Popup>
+           // TODO - popup
         }
 
         return (
@@ -138,9 +112,9 @@ class Collection extends React.Component {
                         ) : (null)}   
                         </Menu>
                     ) : (null)}
-                    {collectionView}
                 </Button>
             </ClickAwayListener>    
+            {collectionView}
         </div>);
     }
 } 
