@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
-import { Button, Menu, MenuList, MenuItem, Fade } from "@material-ui/core"
+import { Button, Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
 import { sendAuthorizedBackendPOST, sendBackendGET } from "../rest/backendAPI";
 
 import { collectionsUpdated, displayedUser } from "../redux/actions";
@@ -24,12 +24,14 @@ class Search extends React.Component {
             filmResponse: "",
             posterURL: "",
             menuAnchor: null,
+            showAddMenu: false,
             generalResponse: ""
         }
 
         this.searchFilm = this.searchFilm.bind(this);
         this.searchUser = this.searchUser.bind(this);
         this.userClick = this.userClick.bind(this);
+        this.handleClickAway = this.handleClickAway.bind(this);
     }
 
     async searchFilm () {
@@ -77,6 +79,7 @@ class Search extends React.Component {
             this.setState({generalResponse: ""})
             this.setState({userResult: matches})
         } else {
+            this.setState({userResult: []});
             this.setState({generalResponse: "No matches found"})
         }
     }
@@ -101,18 +104,20 @@ class Search extends React.Component {
         }
     }
 
-    showAddMenu = (event) => {
-        this.setState({menuAnchor: event.currentTarget});
-    }
-
-    handleMenuClose = (id) => {
-        if (id) {
-            this.addToCollection(id);
+    toggleMenu = (event) => {
+        if (this.state.showAddMenu) {
+            this.handleMenuClose();    
+        } else {
+            this.setState({showAddMenu: true, menuAnchor: event.currentTarget});
         }
+    }
+    
+    handleMenuClose = () => {
+        this.setState({showAddMenu: false});
         this.setState({menuAnchor: null});
     }
 
-    addToCollection(id) {
+    addToCollection = (id) => {
         const body = {
             "collection_id": id,
             "film_id": this.state.filmResult.imdbID
@@ -132,8 +137,43 @@ class Search extends React.Component {
         browserHistory.push("/profile");
     }
 
-    //TODO - only render search button after displaying results
+    handleClickAway() {
+        this.setState({showAddMenu: false});
+    }
+
     render() {
+        let film = (null);
+        if (this.state.filmResult != null) {
+            film = 
+            <div>
+                <ClickAwayListener onClickAway={this.handleClickAway}>
+                    <Button aria-controls="addMenu" aria-haspopup="true" onClick={this.toggleMenu}>
+                        <img src={this.state.posterURL}></img>
+                        {Parser(this.state.filmResponse)}
+                        {this.state.showAddMenu ? (  
+                            <Menu
+                                id="addMenu"
+                                anchorEl={this.state.menuAnchor}
+                                keepMounted
+                                open={Boolean(this.state.menuAnchor)}
+                                onClose={this.handleMenuClose}
+                                TransitionComponent={Fade}
+                            >
+                            Add to Collection:
+                            {this.props.myCollections.map((collection) =>
+                                <MenuItem
+                                    key={collection.id} 
+                                    value={collection.name}
+                                    onClick={this.addToCollection.bind(null, collection.id)} 
+                                >{collection.name}</MenuItem>
+                            )}     
+                            </Menu>
+                        ) : (null)}
+                     </Button>
+                </ClickAwayListener>             
+            </div>
+        } 
+
         return (
             <div className="Search">
                 <Button color="primary" onClick={this.searchFilm}>Search Film by Title</Button>
@@ -143,28 +183,8 @@ class Search extends React.Component {
                     onChange={e => this.setState({filmInput: e.target.value})} 
                     onKeyUp={e => this.handleKeyPress(e, "film")}
                 />
-                <Button aria-controls="addMenu" aria-haspopup="true" onClick={this.showAddMenu}>
-                    <img src={this.state.posterURL}></img>
-                    {Parser(this.state.filmResponse)}
-                </Button>
-                <Menu
-                    id="addMenu"
-                    anchorEl={this.state.menuAnchor}
-                    keepMounted
-                    open={Boolean(this.state.menuAnchor)}
-                    onClose={this.handleMenuClose}
-                    TransitionComponent={Fade}
-                >
-                    Add to Collection:
-                    {this.props.myCollections.map((collection) =>
-                        <MenuItem
-                            key={collection.id} 
-                            value={collection.name}
-                            onClick={this.handleMenuClose.bind(null, collection.id)} 
-                        >{collection.name}</MenuItem>
-                    )}     
-                </Menu>
-                <Button color="primary" onClick={this.searchUser}>Search Username</Button>
+                {film}
+                <Button color="primary" onClick={this.searchUser}>Search Username</Button>    
                 <input
                     type="text"
                     vazlue={this.state.userInput}
