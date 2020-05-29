@@ -20,9 +20,12 @@ class Collection extends React.Component {
             films: []
         };
 
-        this.renderFilms();
-
         this.viewCollection = this.viewCollection.bind(this);
+        this.closePopup = this.closePopup.bind(this);
+    }
+
+    componentDidMount() {
+        this.renderFilms();
     }
 
     renderFilms() {
@@ -43,6 +46,7 @@ class Collection extends React.Component {
     
     viewCollection() {
         this.setState({viewCollection: true});
+        console.log(this.state.films)
     }
 
     deleteCollection() {
@@ -67,15 +71,27 @@ class Collection extends React.Component {
         return (this.props.loggedInUser === creator);
     }
     
+    closePopup() {
+        this.setState({viewCollection: false});
+    }
+
     render () {
         let myCollection = false;
         if(this.isMyCollection()) {
             myCollection = true;    
         }
-        let collectionView = (null)
-        if (this.state.viewCollection) {
-           // TODO - popup
-        }
+        let collectionView =//= this.state.viewCollection ? (
+            <Popup 
+                open={this.state.viewCollection}
+                position="right center"
+                closeOnEscape
+                onClose={this.closePopup}    
+            >
+                <div>
+                    {this.state.films}
+                </div>
+            </Popup>
+        //) : (null);
 
         return (
         <div className="Collection">
@@ -93,31 +109,33 @@ class Collection extends React.Component {
                             open={Boolean(this.state.menuAnchor)}
                             onClose={this.handleMenuClose}
                             TransitionComponent={Fade}
-                        >  
+                        > 
                         <MenuItem
                             key={"view"}
                             value={"view"}
                             onClick={this.viewCollection}
                         >
-                            View
-                        </MenuItem>
+                         View
+                        </MenuItem> 
                         {myCollection ? (
                             <MenuItem
                                 key={"delete"}
                                 value={"delete"}
                                 onClick={this.deleteCollection}    
                             >
-                                Delete
+                            Delete
                             </MenuItem>
                         ) : (null)}   
                         </Menu>
                     ) : (null)}
                 </Button>
-            </ClickAwayListener>    
-            {collectionView}
+            </ClickAwayListener>
+            {collectionView}    
         </div>);
     }
 } 
+
+
 
 function mapStateToProps(state) {
     return {
