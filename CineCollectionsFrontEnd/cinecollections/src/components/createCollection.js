@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./css/general.css";
+
 import { connect } from "react-redux";
 
 import Button from "./button";

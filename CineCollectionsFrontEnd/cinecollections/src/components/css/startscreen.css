@@ -6,13 +6,6 @@
     font-family: "HollywoodHills";
 }
 
-p {
-    color: #ec4d37;
-    font-family: "basketball";
-    letter-spacing: 2px;
-    margin: 2px;
-}
-
 p.formbutton {
     color: #262223;
     font-size: 25px;
@@ -36,14 +29,7 @@ h1.title {
 .Login {
     float: left;
     width: 100%;
-}
-
-.btn-custom {
-    color: #ec4d37;
-    background-color: #ec4d37;
-    border-color: #262223;
-}
-
+} 
 .Register {
     margin-top: 50px;
     float: left;

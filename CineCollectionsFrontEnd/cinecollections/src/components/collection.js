@@ -1,6 +1,8 @@
 import React from "react";
 import Parser from "html-react-parser";
 
+import "./css/general.css";
+
 import { connect } from "react-redux";
 
 import { Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"

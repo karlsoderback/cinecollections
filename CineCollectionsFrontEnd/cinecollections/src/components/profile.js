@@ -1,5 +1,6 @@
 import React from "react";
 import "./css/profile.css";
+import "./css/general.css";
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
 
@@ -170,8 +171,8 @@ class Profile extends React.Component {
                             {this.state.renderSubCollections}
                         </div>
                     </div>
-                </div>               
-                <div className="Search">
+                </div>              
+                <div className="SearchWrapper">
                     <Search />
                 </div>
             </div>

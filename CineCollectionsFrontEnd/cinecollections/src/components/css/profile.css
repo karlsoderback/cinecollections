@@ -8,6 +8,7 @@
 
 .ProfileInfoWrapper {
     width: 50%;
+    height: 100%;
     float: left;
 }
 
@@ -22,26 +23,16 @@ h2.collectionHeader {
     text-align: left;
     color: #ec4d37;
     font-size: 50px;
-}
-
-p {
-    color: #ec4d37;
     font-family: "basketball";
     letter-spacing: 2px;
-    margin: 2px;
 }
 
-.Search {
+.SearchWrapper {
     float: right;
     width: 50%;
+    height: 100%;
 }
 
 .collections {
     float: left;
-}
-
-p.buttontext {
-    font-family: "basketball";
-    letter-spacing: 2px;
-    font-size: 20px;
 }

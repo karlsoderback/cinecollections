@@ -1,4 +1,5 @@
 import "./css/startscreen.css"
+import "./css/general.css";
 
 import React from "react";
 import { sendBackendPOST } from "../rest/backendAPI"

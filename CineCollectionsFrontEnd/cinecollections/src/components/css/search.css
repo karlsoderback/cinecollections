@@ -1,0 +1,12 @@
+.Search {
+    background-color: #262223;
+    float: right;
+    width: 100%;
+    position: fixed;
+    font-family: "HollywoodHills";
+}
+
+.SearchFilm Button input{
+    margin: auto;
+    float: right;
+}

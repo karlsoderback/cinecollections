@@ -1,5 +1,7 @@
 import React from "react";
 import Parser from "html-react-parser";
+import "./css/search.css";
+import "./css/general.css";
 
 import { connect } from "react-redux";
 
@@ -181,15 +183,21 @@ class Search extends React.Component {
 
         return (
             <div className="Search">
-                <Button onClick={this.searchFilm}>Search Film by Title</Button>
-                <input 
-                    type="text" 
-                    value={this.state.filmInput} 
-                    onChange={e => this.setState({filmInput: e.target.value})} 
-                    onKeyUp={e => this.handleKeyPress(e, "film")}
-                />
-                {film}
-                <Button onClick={this.searchUser}>Search Username</Button>    
+                <div className="Searchfilm">
+                    <Button onClick={this.searchFilm}>
+                        <p class="buttontext">Search Film by Title</p>
+                    </Button>
+                    <input 
+                        type="text" 
+                        value={this.state.filmInput} 
+                        onChange={e => this.setState({filmInput: e.target.value})} 
+                        onKeyUp={e => this.handleKeyPress(e, "film")}
+                    />
+                    {film}
+                </div>
+                <Button onClick={this.searchUser}>
+                    <p class="buttontext">Search Username</p>
+                </Button>    
                 <input
                     type="text"
                     vazlue={this.state.userInput}
