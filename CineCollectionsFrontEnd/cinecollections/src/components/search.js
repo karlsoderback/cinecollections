@@ -5,8 +5,9 @@ import { connect } from "react-redux";
 
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
-import { Button, Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
+import { Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core";
 import { sendAuthorizedBackendPOST, sendBackendGET } from "../rest/backendAPI";
+import Button from "./button";
 
 import { collectionsUpdated, displayedUser } from "../redux/actions";
 
@@ -19,7 +20,7 @@ class Search extends React.Component {
         this.state = {
             filmInput: "",
             userInput: "",
-            filmResult: new Object(),
+            filmResult: null,
             userResult: [],
             filmResponse: "",
             posterURL: "",
@@ -147,7 +148,11 @@ class Search extends React.Component {
             film = 
             <div>
                 <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <Button aria-controls="addMenu" aria-haspopup="true" onClick={this.toggleMenu}>
+                    <Button 
+                    aria-controls="addMenu" 
+                    aria-haspopup="true" 
+                    onClick={this.toggleMenu}
+                    >
                         <img src={this.state.posterURL}></img>
                         {Parser(this.state.filmResponse)}
                         {this.state.showAddMenu ? (  
@@ -176,7 +181,7 @@ class Search extends React.Component {
 
         return (
             <div className="Search">
-                <Button color="primary" onClick={this.searchFilm}>Search Film by Title</Button>
+                <Button onClick={this.searchFilm}>Search Film by Title</Button>
                 <input 
                     type="text" 
                     value={this.state.filmInput} 
@@ -184,7 +189,7 @@ class Search extends React.Component {
                     onKeyUp={e => this.handleKeyPress(e, "film")}
                 />
                 {film}
-                <Button color="primary" onClick={this.searchUser}>Search Username</Button>    
+                <Button onClick={this.searchUser}>Search Username</Button>    
                 <input
                     type="text"
                     vazlue={this.state.userInput}
@@ -195,7 +200,6 @@ class Search extends React.Component {
                     this.state.userResult.map((user) => 
                         <Button
                             key={user.id}
-                            color="primary"
                             onClick={this.userClick.bind(null, user)}
                         >
                         {user.username}

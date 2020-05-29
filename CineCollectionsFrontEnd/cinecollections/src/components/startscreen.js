@@ -71,9 +71,7 @@ class Startscreen extends React.Component {
     render(){
         return (
             <div className="Startscreen">
-                <div className="title">
-                    <h1>CineCollections</h1>
-                </div>
+                <h1 class="title">CineCollections</h1>
                 <div className="Forms">
                     <div className="Login">
                         <form className="loginForm" onSubmit={this.loginSubmit}>

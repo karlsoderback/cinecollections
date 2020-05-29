@@ -6,18 +6,6 @@
     font-family: "HollywoodHills";
 }
 
-h1 {
-    text-align: center;
-    color: #ec4d37;
-    font-size: 102px;
-}
-
-h2 {
-    text-align: center;
-    color: #ec4d37;
-    font-size: 42px;
-}
-
 p {
     color: #ec4d37;
     font-family: "basketball";
@@ -30,6 +18,12 @@ p.formbutton {
     font-size: 25px;
     font-family: "basketball";
     letter-spacing: 2px;
+}
+
+h1.title {
+    text-align: center;
+    color: #ec4d37;
+    font-size: 102px;
 }
 
 .Forms {

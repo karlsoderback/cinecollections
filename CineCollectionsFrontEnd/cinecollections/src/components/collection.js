@@ -3,8 +3,9 @@ import Parser from "html-react-parser";
 
 import { connect } from "react-redux";
 
-import { Button, Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
+import { Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
 import Popup from "reactjs-popup";
+import Button from "./button";
 
 import { getCreator, sendAuthorizedBackendGET } from "../rest/backendAPI"
 
