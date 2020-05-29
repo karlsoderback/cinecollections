@@ -1,0 +1,70 @@
+.Startscreen {
+    background-color: #262223;
+    width:100%;
+    height:100%;
+    position: fixed;
+    font-family: "HollywoodHills";
+}
+
+h1 {
+    text-align: center;
+    color: #ec4d37;
+    font-size: 102px;
+}
+
+h2 {
+    text-align: center;
+    color: #ec4d37;
+    font-size: 42px;
+}
+
+p {
+    color: #ec4d37;
+    font-family: "Tahoma";
+    font-weight: bold;
+    margin: 2px;
+}
+
+p.formbutton {
+    color: #262223;
+    font-family: "HollywoodHills";
+    font-size: 20px;
+}
+
+.wrapper {
+    float: center;
+    margin: auto;
+}
+
+.Forms {
+    width: 300px;
+    overflow: hidden;
+}
+
+.Login {
+    float: left;
+    width: 100%;
+}
+
+.btn-custom {
+    color: #ec4d37;
+    background-color: #ec4d37;
+    border-color: #262223;
+}
+
+.Register {
+    margin-top: 50px;
+    float: left;
+    width: 100%;
+}
+
+.leftimage {
+    float: left;
+    margin-right: 100px;
+    width: 300px;
+}
+
+.leftimage img {
+    width: 100%;
+}
+
