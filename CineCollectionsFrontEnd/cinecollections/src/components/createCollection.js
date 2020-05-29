@@ -32,7 +32,7 @@ class CreateCollection extends React.Component {
 
     render () { // TODO - Close popup after creation
         let create;
-        if(this.props.loggedInUser === this.props.displayedUser) {
+        if(this.props.loggedInUser === this.props.displayUser) {
             create = 
                 <Popup trigger={
                     <Button
@@ -67,7 +67,7 @@ class CreateCollection extends React.Component {
 function mapStateToProps(state) {
     return {
           loggedInUser: state.loginState.loggedInUser,
-          displayedUser: state.loginState.displayedUser,
+          displayUser: state.loginState.displayedUser,
           token: state.loginState.token
     }
   }

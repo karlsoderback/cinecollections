@@ -137,7 +137,7 @@ class Search extends React.Component {
         browserHistory.push("/profile");
     }
 
-    handleClickAway() {
+    handleClickAway() { // TODO -replace with close?
         this.setState({showAddMenu: false});
     }
 

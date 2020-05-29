@@ -6,24 +6,24 @@ import { connect } from "react-redux";
 import { 
     loggedIn, 
     loggedOut, 
-    fetchedCollections, 
-    collectionsUpdated, 
+    fetchedCollections,
     displayedUser, 
     handledCollectionUpdate 
 } from "../redux/actions";
 
-import { sendBackendGET } from "../rest/backendAPI"
+import { sendBackendGET, getCreator } from "../rest/backendAPI"
 import { getFilmById, getFilmPoster } from "../rest/movieAPI";
 
 import Search from "./search";
 import CreateCollection from "./createCollection";
+import Collection from "./collection";
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            myCollections: [],
-            subCollections: [],
+            simpleMyCollections: [],
+            simpleSubCollections: [],
             renderMyCollections: [],
             renderSubCollections:[],
             displayUser: ""
@@ -31,7 +31,6 @@ class Profile extends React.Component {
         
         this.logOut = this.logOut.bind(this);
         this.renderCollections = this.renderCollections.bind(this);
-        this.getCreator = this.getCreator.bind(this);
         this.refreshCollections = this.refreshCollections.bind(this);
     }
     
@@ -55,8 +54,8 @@ class Profile extends React.Component {
     refreshCollections(user) {
         sendBackendGET("collection/getallforuser?username=" + user).then(
             data => {
-                this.setState({myCollections: data.my_collections});
-                this.setState({subCollections: data.subscribed_collections});  
+                this.setState({simpleMyCollections: data.my_collections});
+                this.setState({simpleSubCollections: data.subscribed_collections});  
                 this.renderCollections();
             }
         )
@@ -71,81 +70,63 @@ class Profile extends React.Component {
     }
 
     async renderCollections(){   
-        let myCollections = [];
-        let subCollections = [];
+        let detailedMyCollections = [];
+        let detailedSubCollections = [];
         let retMyCollections = [];
         let retSubCollections = [];
-        
-        for (let i = 0; i < this.state.myCollections.length; i++) { // Render my collections
-            const collection = this.state.myCollections[i];
-            
+ 
+        for (let i = 0; i < this.state.simpleMyCollections.length; i++) { // Render my collections
+            const collection = this.state.simpleMyCollections[i];
             const fullInfoCollection = await this.generateDetailedFilmList(collection);
-            myCollections.push(fullInfoCollection);
-            
-            const films = this.renderFilms(fullInfoCollection); 
-            
+   
+            detailedMyCollections.push(fullInfoCollection);  
             retMyCollections.push(
                 <div key={collection.collection_id}>
-                <h3>{collection.collection_name}</h3>
-                <h4>Films:</h4>
-                {films}
-            </div>);
+                    <Collection data={fullInfoCollection}/>
+                </div>
+            );
         }
 
-        for (let i = 0; i < this.state.subCollections.length; i++) { // Render subscribed collections
-            const collection = this.state.subCollections[i];
+        for (let i = 0; i < this.state.simpleSubCollections.length; i++) { // Render subscribed collections
+            const collection = this.state.simpleSubCollections[i];
             
             const fullInfoCollection = await this.generateDetailedFilmList(collection);
-            subCollections.push(fullInfoCollection);
-            
-            const films = this.renderFilms(fullInfoCollection);
-            const creator = await this.getCreator(collection.creator);
-            
+            detailedSubCollections.push(fullInfoCollection);
+            const creator = await getCreator(collection.creator);
+    
             retSubCollections.push(
                 <div key={collection.collection_id}>
-                    <h3>{collection.collection_name}</h3>
-                    <h4>Creator: {creator}</h4>
-                    <h4>Films:</h4>
-                    {films}
+                    <Collection data={fullInfoCollection}/>
+                    Creator: {creator}
                 </div>);
         }
-        
-        this.setState({myCollections: myCollections});
-        this.setState({subCollections: subCollections});
         
         this.setState({renderMyCollections: retMyCollections});
         this.setState({renderSubCollections: retSubCollections});
 
-        this.props.dispatch(fetchedCollections({myCollections: myCollections, subCollections: subCollections}));
-    }
-
-    renderFilms(fullInfoCollection) {
-        let filmInfo = [];
-        for (let i = 0; i < fullInfoCollection.length; i++) {
-            let film = fullInfoCollection[i];
-            let posterURL = URL.createObjectURL(film.poster);
-            filmInfo.push(
-                <div key={i}>
-                    <img src ={posterURL}></img>
-                    <li>{film.Title}</li>
-                </div>
-            )
-        }
-        return filmInfo;
+        this.props.dispatch(fetchedCollections({myCollections: detailedMyCollections, subCollections: detailedSubCollections}));
     }
 
     async generateDetailedFilmList(collection) {
         let films = []
-        films.id = collection.collection_id;
-        films.name = collection.collection_name;
-        films.creator = collection.creator;
-        for (let i = 0; i < collection.films.length; i++) {
-            let id = collection.films[i];
-            let filmInfo = await this.getFilmFullInfo(id);
-            filmInfo.poster = await getFilmPoster(id)
-            films.push(filmInfo);
+        let detailedCollection = new Object();
+        detailedCollection.id = collection.collection_id;
+        detailedCollection.collection_name = collection.collection_name;
+        detailedCollection.creator = collection.creator;
+        if (collection.films.length != 0) {
+            for (let i = 0; i < collection.films.length; i++) {
+                let id = collection.films[i];
+                let filmInfo = await this.getFilmFullInfo(id);
+                if (filmInfo.Response === "False") {
+                    console.log(filmInfo.Error);
+                } else {
+                    filmInfo.poster = await getFilmPoster(id)
+                    films.push(filmInfo);
+                }
+            }
         }
-        return films;
+        detailedCollection.films = films;
+        return detailedCollection;
     }
 
     async getFilmFullInfo(id) {
@@ -156,16 +137,6 @@ class Profile extends React.Component {
                 }
             )
         });
-    }
-
-    async getCreator(userid) {
-        return await new Promise(resolve => {
-            sendBackendGET("user/get?userid=" + userid).then(
-                creator => {
-                    resolve(creator);
-                }
-            )
-        }); 
     }
 
     render() {
@@ -182,7 +153,6 @@ class Profile extends React.Component {
             <div className="profile">
                 <Search />
                 <CreateCollection />
-                {this.state.test}
                 <h1>{this.props.displayUser}</h1>
                 <button onClick={this.logOut}>Log out</button>
                 <button onClick={this.home}>Home</button>

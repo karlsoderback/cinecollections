@@ -95,3 +95,13 @@ export function sendAuthorizedBackendGET(url, token) {
          }
       });
    }
+
+   export async function getCreator(userid) {
+      return await new Promise(resolve => {
+          sendBackendGET("user/get?userid=" + userid).then(
+              creator => {
+                  resolve(creator);
+              }
+          )
+      }); 
+  }
