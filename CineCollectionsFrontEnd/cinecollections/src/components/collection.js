@@ -6,8 +6,9 @@ import { connect } from "react-redux";
 import { Button, Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
 import Popup from "reactjs-popup";
 
-import { getCreator } from "../rest/backendAPI"
+import { getCreator, sendAuthorizedBackendGET } from "../rest/backendAPI"
 
+import { collectionsUpdated } from "../redux/actions"
 
 class Collection extends React.Component {
     constructor(props) {
@@ -23,6 +24,9 @@ class Collection extends React.Component {
 
         this.viewCollection = this.viewCollection.bind(this);
         this.closePopup = this.closePopup.bind(this);
+        this.deleteCollection = this.deleteCollection.bind(this);
+        this.subscribeToCollection = this.subscribeToCollection.bind(this);
+        this.authorizedCollectionRequest = this.authorizedCollectionRequest.bind(this);
     }
 
     componentDidMount() {
@@ -40,6 +44,7 @@ class Collection extends React.Component {
                 <div key={i}>
                     <img src ={posterURL}></img>
                     <li>{film.Title}</li>
+                    <li>{film.Year}</li>
                 </div>
             )
         }
@@ -51,8 +56,28 @@ class Collection extends React.Component {
         console.log(this.state.films)
     }
 
-    deleteCollection() {
-        console.log("delete")
+    async deleteCollection() {
+        let result = await this.authorizedCollectionRequest("delete", this.state.data.id);
+        if (result) {
+            this.props.dispatch(collectionsUpdated());
+        }
+    }
+
+    async subscribeToCollection() {
+        let result = await this.authorizedCollectionRequest("subscribe", this.state.data.id);
+        if (result) {
+            this.props.dispatch(collectionsUpdated());
+        }
+    }
+    
+    async authorizedCollectionRequest(endpoint, collectionId) {
+        return await new Promise(resolve => {
+            sendAuthorizedBackendGET("collection/" + endpoint + "?username=" + this.props.loggedInUser + "&collectionId=" + collectionId, this.props.token).then(
+                result => {
+                    resolve(result);
+                }
+            );
+        });
     }
 
     toggleMenu = (event) => {
@@ -124,7 +149,15 @@ class Collection extends React.Component {
                             >
                             Delete
                             </MenuItem>
-                        ) : (null)}   
+                        ) : (
+                            <MenuItem
+                                key={"subscribe"}
+                                value={"subscribe"}
+                                onClick={this.subscribeToCollection}    
+                            >
+                            Subscribe
+                            </MenuItem>
+                        )}   
                         </Menu>
                     ) : (null)}
                 </Button>
@@ -139,7 +172,8 @@ class Collection extends React.Component {
 function mapStateToProps(state) {
     return {
         loggedInUser: state.loginState.loggedInUser,
-        displayUser: state.loginState.displayedUser
+        displayUser: state.loginState.displayedUser,
+        token: state.loginState.token
     }
 }
     
