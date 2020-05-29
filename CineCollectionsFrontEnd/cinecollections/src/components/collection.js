@@ -17,7 +17,8 @@ class Collection extends React.Component {
             showCollectionMenu: false,
             menuAnchor: null,
             viewCollection: false,
-            films: []
+            films: [],
+            isMyCollection: false
         };
 
         this.viewCollection = this.viewCollection.bind(this);
@@ -26,6 +27,7 @@ class Collection extends React.Component {
 
     componentDidMount() {
         this.renderFilms();
+        this.isMyCollection()
     }
 
     renderFilms() {
@@ -68,7 +70,9 @@ class Collection extends React.Component {
 
     async isMyCollection() {
         const creator = await getCreator(this.state.data.creator);
-        return (this.props.loggedInUser === creator);
+        if (this.props.loggedInUser === creator) {
+            this.setState({isMyCollection: true})
+        }
     }
     
     closePopup() {
@@ -76,11 +80,7 @@ class Collection extends React.Component {
     }
 
     render () {
-        let myCollection = false;
-        if(this.isMyCollection()) {
-            myCollection = true;    
-        }
-        let collectionView =//= this.state.viewCollection ? (
+        let collectionView =
             <Popup 
                 open={this.state.viewCollection}
                 position="right center"
@@ -91,7 +91,6 @@ class Collection extends React.Component {
                     {this.state.films}
                 </div>
             </Popup>
-        //) : (null);
 
         return (
         <div className="Collection">
@@ -117,7 +116,7 @@ class Collection extends React.Component {
                         >
                          View
                         </MenuItem> 
-                        {myCollection ? (
+                        {this.state.isMyCollection ? (
                             <MenuItem
                                 key={"delete"}
                                 value={"delete"}
