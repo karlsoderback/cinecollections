@@ -16,3 +16,8 @@ code {
   font-family: "HollywoodHills";
   src: local("HollywoodGHills"), url(./fonts/HollywoodHills/SFHollywoodHills.ttf) format("truetype");
 }
+
+@font-face {
+  font-family: "basketball";
+  src: local("basketball"), url(./fonts/basketball/Basketball.otf) format("truetype");
+}

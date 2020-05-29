@@ -20,25 +20,23 @@ h2 {
 
 p {
     color: #ec4d37;
-    font-family: "Tahoma";
-    font-weight: bold;
+    font-family: "basketball";
+    letter-spacing: 2px;
     margin: 2px;
 }
 
 p.formbutton {
     color: #262223;
-    font-family: "HollywoodHills";
-    font-size: 20px;
-}
-
-.wrapper {
-    float: center;
-    margin: auto;
+    font-size: 25px;
+    font-family: "basketball";
+    letter-spacing: 2px;
 }
 
 .Forms {
+    margin: auto;
     width: 300px;
     overflow: hidden;
+    font-family: "basketball";
 }
 
 .Login {
@@ -57,14 +55,3 @@ p.formbutton {
     float: left;
     width: 100%;
 }
-
-.leftimage {
-    float: left;
-    margin-right: 100px;
-    width: 300px;
-}
-
-.leftimage img {
-    width: 100%;
-}
-

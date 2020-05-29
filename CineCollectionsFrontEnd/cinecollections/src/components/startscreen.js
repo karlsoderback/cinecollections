@@ -74,75 +74,67 @@ class Startscreen extends React.Component {
                 <div className="title">
                     <h1>CineCollections</h1>
                 </div>
-                <div className="wrapper">
-                    <div className="leftimage">
-                        <img src={require ("../images/clapperboard.png")}/>
+                <div className="Forms">
+                    <div className="Login">
+                        <form className="loginForm" onSubmit={this.loginSubmit}>
+                            <FormGroup controlId="loginUsername" bssize="large">
+                                <FormControl 
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Username"
+                                    value={this.state.loginUsername}
+                                    onChange={e => this.setState({loginUsername: e.target.value})}
+                                />
+                            </FormGroup>
+                            <FormGroup controlId="loginPassword" bssize="large">
+                                <FormControl 
+                                    type="password"
+                                    placeholder="Password"
+                                    value={this.state.loginPassword}
+                                    onChange={e => this.setState({loginPassword: e.target.value})}
+                                />
+                            </FormGroup>
+                            <Button 
+                            block bssize="large" 
+                            disabled={!this.validateForm(this.state.loginUsername, this.state.loginPassword)} 
+                            type="submit"
+                            variant="custom"
+                            >
+                            <p class="formbutton">Login</p>
+                            </Button>
+                        </form>
                     </div>
-                    <div className="rightimage">
-                            
-                    </div>
-                    <div className="Forms">
-                        <div className="Login">
-                            <form className="loginForm" onSubmit={this.loginSubmit}>
-                                <FormGroup controlId="loginUsername" bssize="large">
+                    <div className="Register">
+                        <form className="registerForm" onSubmit={this.registerSubmit}>
+                            <FormGroup controlId="registerUsername" bssize="large">
                                     <FormControl 
                                         autoFocus
                                         type="text"
                                         placeholder="Username"
-                                        value={this.state.loginUsername}
-                                        onChange={e => this.setState({loginUsername: e.target.value})}
+                                        value={this.state.registerUsername}
+                                        onChange={e => this.setState({registerUsername: e.target.value})}
                                     />
                                 </FormGroup>
-                                <FormGroup controlId="loginPassword" bssize="large">
+                                <FormGroup controlId="registerPassword" bssize="large">
                                     <FormControl 
                                         type="password"
                                         placeholder="Password"
-                                        value={this.state.loginPassword}
-                                        onChange={e => this.setState({loginPassword: e.target.value})}
+                                        value={this.state.registerPassword}
+                                        onChange={e => this.setState({registerPassword: e.target.value})}
                                     />
                                 </FormGroup>
                                 <Button 
                                 block bssize="large" 
-                                disabled={!this.validateForm(this.state.loginUsername, this.state.loginPassword)} 
+                                disabled={!this.validateForm(this.state.registerUsername, this.state.registerPassword)} 
                                 type="submit"
                                 variant="custom"
                                 >
-                                <p class="formbutton">Login</p>
+                                <p class="formbutton">Register</p>
                                 </Button>
-                            </form>
-                        </div>
-                        <div className="Register">
-                            <form className="registerForm" onSubmit={this.registerSubmit}>
-                                <FormGroup controlId="registerUsername" bssize="large">
-                                        <FormControl 
-                                            autoFocus
-                                            type="text"
-                                            placeholder="Username"
-                                            value={this.state.registerUsername}
-                                            onChange={e => this.setState({registerUsername: e.target.value})}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup controlId="registerPassword" bssize="large">
-                                        <FormControl 
-                                            type="password"
-                                            placeholder="Password"
-                                            value={this.state.registerPassword}
-                                            onChange={e => this.setState({registerPassword: e.target.value})}
-                                        />
-                                    </FormGroup>
-                                    <Button 
-                                    block bssize="large" 
-                                    disabled={!this.validateForm(this.state.registerUsername, this.state.registerPassword)} 
-                                    type="submit"
-                                    variant="custom"
-                                    >
-                                    <p class="formbutton">Register</p>
-                                    </Button>
-                            </form>
-                        </div>
-                        <div className="response">
-                            <p>{Parser(this.state.response)}</p>
-                        </div>
+                        </form>
+                    </div>
+                    <div className="response">
+                        <p>{Parser(this.state.response)}</p>
                     </div>
                 </div>
             </div>
