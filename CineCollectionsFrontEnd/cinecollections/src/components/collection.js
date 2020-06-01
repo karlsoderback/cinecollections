@@ -54,18 +54,22 @@ class Collection extends React.Component {
             if (i === 0)  {
                 this.setState({displayPoster: posterURL});
             }   
-
             films.push(
-                <div key={i}>
-                    <img src ={posterURL}></img>
-                    <li>{film.Title}</li>
-                    <li>{film.Year}</li>
+                <div key={i} className="filmBox">
+                    <div className="viewPoster">
+                        <img src={posterURL} height="200" />
+                    </div>
+                    <center>{film.Title}</center>
+                    <center>{film.Year}</center>
                 </div>
             )
         }
         this.setState({films: films});
     }
     
+    /*
+<p className="filmInfo">
+    */
     viewCollection() {
         this.setState({viewCollection: true});
     }
@@ -121,13 +125,19 @@ class Collection extends React.Component {
     render () {
         let collectionView =
             <Popup 
+                className="viewPopup"
                 open={this.state.viewCollection}
                 position="right center"
                 closeOnEscape
                 onClose={this.closePopup}    
             >
-                <div>
-                    {this.state.films}
+                <div className="filmPopup">
+                    <div className="header">
+                        <p className="collectionText">{this.state.data.collection_name}</p>
+                    </div>
+                    <div className="content">
+                        {this.state.films}
+                    </div>
                 </div>
             </Popup>
 

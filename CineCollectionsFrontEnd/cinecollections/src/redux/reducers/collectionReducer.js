@@ -1,9 +1,7 @@
 import {
     FETCHED_COLLECTIONS, 
     COLLECTIONS_UPDATED, 
-    UPDATE_HANDLED, 
-    ADDED_TO_COLLECTION,
-    HANDLED_ADD
+    UPDATE_HANDLED
 } from "../actionTypes";
 
 const initialState = {
