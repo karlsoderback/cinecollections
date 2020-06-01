@@ -1,5 +1,6 @@
 import React from "react";
-
+import "./css/profile.css";
+import "./css/general.css";
 import { browserHistory } from "react-router";
 import { connect } from "react-redux";
 
@@ -17,6 +18,8 @@ import { getFilmById, getFilmPoster } from "../rest/movieAPI";
 import Search from "./search";
 import CreateCollection from "./createCollection";
 import Collection from "./collection";
+
+import Button from "./button";
 
 class Profile extends React.Component {
     constructor(props) {
@@ -100,7 +103,6 @@ class Profile extends React.Component {
                     Creator: {creator}
                 </div>);
         }
-        
         this.setState({renderMyCollections: retMyCollections});
         this.setState({renderSubCollections: retSubCollections});
 
@@ -150,21 +152,27 @@ class Profile extends React.Component {
         }
 
         return (
-            <div className="profile">
-                <Search />
-                <CreateCollection />
-                <h1>{this.props.displayUser}</h1>
-                <button onClick={this.logOut}>Log out</button>
-                <button onClick={this.home}>Home</button>
-                <div className="collections">
-                    <h2>My Collections</h2>
-                    <div className="myCollections">
-                        {this.state.renderMyCollections}
+            <div className="Profile">
+                <div className="ProfileInfoWrapper">
+                    <div className="ProfileHeader">
+                        <h1 className="profileName">{this.props.displayUser}</h1>
+                        <Button onClick={this.logOut}><p className="buttontext">Log out</p></Button>
+                        <Button onClick={this.home}><p className="buttontext">Home</p></Button>
+                        <CreateCollection />
                     </div>
-                    <h2>Subcribed Collections</h2>
-                    <div className="subCollections">
-                        {this.state.renderSubCollections}
+                    <div className="collections">
+                        <h2 className="collectionHeader">My Collections</h2>
+                        <div className="myCollections">
+                            {this.state.renderMyCollections}
+                        </div>
+                        <h2 className="collectionHeader">Subscribed Collections</h2>
+                        <div className="subCollections">
+                            {this.state.renderSubCollections}
+                        </div>
                     </div>
+                </div>              
+                <div className="SearchWrapper">
+                    <Search />
                 </div>
             </div>
         );

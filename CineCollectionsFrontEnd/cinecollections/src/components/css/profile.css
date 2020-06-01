@@ -1,0 +1,53 @@
+.Profile {
+    background-color: #262223;
+    width:100%;
+    height:100%;
+    position: fixed;
+    font-family: "HollywoodHills";
+    overflow-y: scroll;
+}
+
+
+h1.profileName {
+    text-align: left;
+    color: #ec4d37;
+    font-size: 102px;
+    width: 50%;
+}
+
+h2.collectionHeader {
+    text-align: left;
+    color: #ec4d37;
+    font-size: 50px;
+    font-family: "lemonmilk";
+    letter-spacing: 2px;
+    float: left;
+}
+
+.ProfileInfoWrapper {
+    width: 40%;
+    height: 100%;
+    float: left;
+}
+
+.SearchWrapper {
+    float: left;
+    width: 55%;
+    height: 100%;
+    margin: auto;
+}
+
+.collections {
+    float: left;
+}
+
+.myCollections {
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.subCollections {
+    float: left;
+    width: 100%;
+}

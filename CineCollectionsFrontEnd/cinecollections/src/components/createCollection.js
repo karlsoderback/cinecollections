@@ -1,8 +1,11 @@
 import React from "react";
 
+import "./css/general.css";
+import "./css/createCollection.css";
+
 import { connect } from "react-redux";
 
-import { Button } from "@material-ui/core";
+import Button from "./button";
 import Popup from "reactjs-popup";
 
 import { sendAuthorizedBackendGET } from "../rest/backendAPI";
@@ -34,24 +37,25 @@ class CreateCollection extends React.Component {
         let create;
         if(this.props.loggedInUser === this.props.displayUser) {
             create = 
+            <div className="createPopup">
                 <Popup trigger={
-                    <Button
-                    color="primary"
-                    >
-                    Create Collection
+                    <Button>
+                    <p>Create New Collection</p>
                     </Button>
                 }
                 position="right center">
                     <div>
-                        {this.state.response}
-                        <input 
+                        <input
+                            className="create" 
                             type="text" 
                             value ={this.state.collectionName} 
                             onChange={e => this.setState({collectionName: e.target.value})} 
-                        />
-                        <Button color="primary" onClick={this.create}>Create Collection</Button>
+                            />
+                        <Button onClick={this.create}><p>Create</p></Button>
                     </div>
+                    <p>{this.state.response}</p>
                 </Popup>
+            </div>
         } else {
             create = (null);
         }

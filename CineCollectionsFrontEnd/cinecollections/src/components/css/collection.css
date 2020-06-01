@@ -1,0 +1,73 @@
+.Collection {
+    position: relative;
+    text-align: center;
+    color: white;
+    float: left;
+    width: 196.883px;
+    height: 300px;
+    margin-left: 10px;
+}
+
+.posterText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.displayPoster{
+    filter: blur(3px);
+}
+
+p.collectionText {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.filmBox {
+    margin: 10px;
+    float: left;
+    width: 45%;
+    text-align: center;
+    background: #262223;
+}
+
+center {
+    color: #ec4d37;
+    font-family: "lemonmilk";
+    background: #262223;
+}
+
+.viewPopup-content {
+    background: #262223;
+    border: #262223;
+}
+
+.filmPopup {
+    background-color: #262223;
+    border: #262223;
+}
+
+.viewPoster{
+    display: inline-block;
+    box-shadow: 15px 15px 15px black; 
+    margin-bottom: 10px;
+}
+
+.filmPopup > .header {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    background: #262223;
+}
+
+.filmPopup > .content {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 5px;
+    background: #262223;
+}
+
+p.filmInfo {
+    font-size: 10px;
+}

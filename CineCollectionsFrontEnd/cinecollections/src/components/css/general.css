@@ -1,0 +1,18 @@
+p.buttontext {
+    font-family: "lemonmilk";
+    letter-spacing: 2px;
+    font-size: 20px;
+}
+
+p {
+    color: #ec4d37;
+    font-family: "lemonmilk";
+    letter-spacing: 2px;
+    margin: 2px;
+}
+
+.btn-custom {
+    color: #ec4d37;
+    background-color: #ec4d37;
+    border-color: #262223;
+}

@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: "HollywoodHills";
+  src: local("HollywoodGHills"), url(./fonts/HollywoodHills/SFHollywoodHills.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "lemonmilk";
+  src: local("lemonmilk"), url(./fonts/lemon_milk/LEMONMILK-Regular.otf) format("truetype");
+}

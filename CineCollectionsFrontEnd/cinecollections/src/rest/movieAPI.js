@@ -50,7 +50,7 @@ export function getFilmByTitle(title) {
 }
 
 function getPoster(id) {
-   return fetch(POSTER_URL + "?i=" + id + "&h=200&apikey=" + API_KEY,
+   return fetch(POSTER_URL + "?i=" + id + "&h=800&apikey=" + API_KEY,
    {
       method: 'GET',
       headers: {

@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import "./fonts/HollywoodHills/SFHollywoodHills.ttf";
+import "./fonts/basketball/Basketball.otf";
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 

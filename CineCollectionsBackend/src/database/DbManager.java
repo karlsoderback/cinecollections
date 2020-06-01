@@ -330,7 +330,7 @@ public class DbManager {
         ArrayList<CineCollection> myCollections = new ArrayList<>();
         if (userExists(username)) {
             int userId = getUserId(username);
-            ResultSet rs = executeQuery("SELECT * FROM collections WHERE creator = \'" + userId + "\'", _dbConnection);
+            ResultSet rs = executeQuery("SELECT * FROM collections WHERE creator = \'" + userId + "\' ORDER BY collection_id ASC;", _dbConnection);
             myCollections = getCineCollections(rs);
         }
         return myCollections;
@@ -340,7 +340,7 @@ public class DbManager {
         ArrayList<CineCollection> subscribedCollections = new ArrayList<>();
         if (userExists(username)) {
             int userId = getUserId(username);
-            ResultSet rs = executeQuery("SELECT * FROM collections WHERE \'" + userId + "\' = ANY(subscribers)", _dbConnection);
+            ResultSet rs = executeQuery("SELECT * FROM collections WHERE \'" + userId + "\' = ANY(subscribers) ORDER BY collection_id ASC;", _dbConnection);
             subscribedCollections = getCineCollections(rs);
         }
         return subscribedCollections;

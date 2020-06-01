@@ -1,0 +1,38 @@
+.Startscreen {
+    background-color: #262223;
+    width:100%;
+    height:100%;
+    position: fixed;
+    font-family: "HollywoodHills";
+    overflow: scroll;
+}
+
+p.formbutton {
+    color: #262223;
+    font-size: 25px;
+    font-family: "lemonmilk";
+    letter-spacing: 2px;
+}
+
+h1.title {
+    text-align: center;
+    color: #ec4d37;
+    font-size: 102px;
+}
+
+.Forms {
+    margin: auto;
+    width: 300px;
+    overflow: hidden;
+    font-family: "lemonmilk";
+}
+
+.Login {
+    float: left;
+    width: 100%;
+} 
+.Register {
+    margin-top: 50px;
+    float: left;
+    width: 100%;
+}

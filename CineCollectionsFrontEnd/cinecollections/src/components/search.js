@@ -1,12 +1,15 @@
 import React from "react";
 import Parser from "html-react-parser";
+import "./css/search.css";
+import "./css/general.css";
 
 import { connect } from "react-redux";
 
 import { getFilmByTitle, getFilmPoster } from "../rest/movieAPI";
 
-import { Button, Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core"
+import { Menu, ClickAwayListener, MenuItem, Fade } from "@material-ui/core";
 import { sendAuthorizedBackendPOST, sendBackendGET } from "../rest/backendAPI";
+import Button from "./button";
 
 import { collectionsUpdated, displayedUser } from "../redux/actions";
 
@@ -19,7 +22,7 @@ class Search extends React.Component {
         this.state = {
             filmInput: "",
             userInput: "",
-            filmResult: new Object(),
+            filmResult: null,
             userResult: [],
             filmResponse: "",
             posterURL: "",
@@ -42,14 +45,15 @@ class Search extends React.Component {
             this.setState({filmResult: null});
             this.setState({filmResponse: ""});
         } else {
+            this.setState({generalResponse: ""});
             this.setState({filmResult: result});
             let posterURL = URL.createObjectURL(await getFilmPoster(result.imdbID));
             this.setState({posterURL: posterURL});
-            let filmPrint = 
+            let filmPrint = "<p>" +
                 result.Title + "<br>" +
                 "Released: " + result.Year + "<br>" +
                 "Directed by: " + result.Director + "<br>" +
-                "Genre: " + result.Genre;
+                "Genre: " + result.Genre + "</p>";
             
             this.setState({filmResponse: filmPrint});
         }
@@ -128,7 +132,7 @@ class Search extends React.Component {
                 this.props.dispatch(collectionsUpdated());
             }).catch(error => {
                 this.setState({generalResponse: error});
-        });
+            });
     }
 
     userClick(user){
@@ -145,11 +149,19 @@ class Search extends React.Component {
         let film = (null);
         if (this.state.filmResult != null) {
             film = 
-            <div>
+            <div className="filmResult">
                 <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <Button aria-controls="addMenu" aria-haspopup="true" onClick={this.toggleMenu}>
-                        <img src={this.state.posterURL}></img>
-                        {Parser(this.state.filmResponse)}
+                    <Button 
+                    aria-controls="addMenu" 
+                    aria-haspopup="true" 
+                    onClick={this.toggleMenu}
+                    >
+                        <div className="poster">
+                            <img src={this.state.posterURL} height="500"></img>
+                        </div>
+                        <div className="filmInfo">
+                            {Parser(this.state.filmResponse)}
+                        </div>
                         {this.state.showAddMenu ? (  
                             <Menu
                                 id="addMenu"
@@ -159,13 +171,13 @@ class Search extends React.Component {
                                 onClose={this.handleMenuClose}
                                 TransitionComponent={Fade}
                             >
-                            Add to Collection:
+                            <p>Add to Collection:</p>
                             {this.props.myCollections.map((collection) =>
                                 <MenuItem
                                     key={collection.id} 
-                                    value={collection.name}
+                                    value={collection.collection_name}
                                     onClick={this.addToCollection.bind(null, collection.id)} 
-                                >{collection.name}</MenuItem>
+                                ><p>{collection.collection_name}</p></MenuItem>
                             )}     
                             </Menu>
                         ) : (null)}
@@ -176,34 +188,41 @@ class Search extends React.Component {
 
         return (
             <div className="Search">
-                <Button color="primary" onClick={this.searchFilm}>Search Film by Title</Button>
-                <input 
-                    type="text" 
-                    value={this.state.filmInput} 
-                    onChange={e => this.setState({filmInput: e.target.value})} 
-                    onKeyUp={e => this.handleKeyPress(e, "film")}
-                />
-                {film}
-                <Button color="primary" onClick={this.searchUser}>Search Username</Button>    
-                <input
-                    type="text"
-                    vazlue={this.state.userInput}
-                    onChange={e => this.setState({userInput: e.target.value})}
-                    onKeyUp={e => this.handleKeyPress(e, "user")}
-                />
-                {
-                    this.state.userResult.map((user) => 
+                <div className="Searchboxes">
+                    <Button onClick={this.searchFilm}>
+                        <p className="buttontext">Search Film by Title</p>
+                    </Button>
+                    <input 
+                        type="text" 
+                        value={this.state.filmInput} 
+                        onChange={e => this.setState({filmInput: e.target.value})} 
+                        onKeyUp={e => this.handleKeyPress(e, "film")}
+                    />
+                    <Button onClick={this.searchUser}>
+                        <p className="buttontext">Search Username</p>
+                    </Button>    
+                    <input
+                        type="text"
+                        vazlue={this.state.userInput}
+                        onChange={e => this.setState({userInput: e.target.value})}
+                        onKeyUp={e => this.handleKeyPress(e, "user")}
+                        />
+                    {
+                        this.state.userResult.map((user) => 
                         <Button
-                            key={user.id}
-                            color="primary"
-                            onClick={this.userClick.bind(null, user)}
+                        key={user.id}
+                        onClick={this.userClick.bind(null, user)}
                         >
-                        {user.username}
-                        </Button>
-                    )
-                }
-                <div className="generalResponse">
-                    {Parser(this.state.generalResponse)}
+                            <p>{user.username}</p>
+                            </Button>
+                        )
+                    }
+                    <div className="generalResponse">
+                        <p>{Parser(this.state.generalResponse)}</p>
+                    </div>
+                </div>
+                <div className="Result">>
+                    {film}
                 </div>
             </div>
         );
