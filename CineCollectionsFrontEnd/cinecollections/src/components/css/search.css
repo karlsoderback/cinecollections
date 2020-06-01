@@ -1,0 +1,45 @@
+.Search {
+    background-color: #262223;
+    float: left;
+    width: 55%;
+    position: fixed;
+    font-family: "HollywoodHills";
+}
+
+.SearchBoxes {
+    display: block;
+    margin-left: 1000px;
+    float: right;
+    width: 10px;
+    height: 20px;
+}
+
+.Result {
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+
+input {
+    font-family: "lemonmilk";
+    letter-spacing: 2px;
+    margin: 2px;
+    width: 200px;
+}
+
+.filmInfo {
+    margin-left: 10px;
+    width: 500px;
+}
+
+.poster {
+    box-shadow: 15px 15px 15px;
+}
+
+.generalResponse {
+    margin-left: 10px;
+}
+
+p.title {
+    font-size: 30px;
+}
