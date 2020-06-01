@@ -1,7 +1,7 @@
 .Search {
     background-color: #262223;
     float: left;
-    width: 100%;
+    width: 55%;
     position: fixed;
     font-family: "HollywoodHills";
 }
@@ -34,4 +34,8 @@ input {
 
 .poster {
     box-shadow: 15px 15px 15px;
+}
+
+.generalResponse {
+    margin-left: 10px;
 }

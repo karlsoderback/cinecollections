@@ -4,6 +4,7 @@
     height:100%;
     position: fixed;
     font-family: "HollywoodHills";
+    overflow: scroll;
 }
 
 p.formbutton {

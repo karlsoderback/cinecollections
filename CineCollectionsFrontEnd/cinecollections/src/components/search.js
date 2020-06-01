@@ -45,6 +45,7 @@ class Search extends React.Component {
             this.setState({filmResult: null});
             this.setState({filmResponse: ""});
         } else {
+            this.setState({generalResponse: ""});
             this.setState({filmResult: result});
             let posterURL = URL.createObjectURL(await getFilmPoster(result.imdbID));
             this.setState({posterURL: posterURL});
@@ -217,7 +218,7 @@ class Search extends React.Component {
                         )
                     }
                     <div className="generalResponse">
-                        {Parser(this.state.generalResponse)}
+                        <p>{Parser(this.state.generalResponse)}</p>
                     </div>
                 </div>
                 <div className="Result">>

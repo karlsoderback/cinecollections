@@ -2,6 +2,7 @@ import React from "react";
 import Parser from "html-react-parser";
 
 import "./css/general.css";
+import "./css/collection.css";
 
 import { connect } from "react-redux";
 
@@ -22,7 +23,8 @@ class Collection extends React.Component {
             menuAnchor: null,
             viewCollection: false,
             films: [],
-            isMyCollection: false
+            isMyCollection: false,
+            displayPoster: ""
         };
 
         this.viewCollection = this.viewCollection.bind(this);
@@ -42,6 +44,9 @@ class Collection extends React.Component {
         for (let i = 0; i < this.state.data.films.length; i++) {
             let film = this.state.data.films[i];
             let posterURL = URL.createObjectURL(film.poster);
+            if (i === 0)  {
+                this.setState({displayPoster: posterURL});
+            }   
 
             films.push(
                 <div key={i}>
@@ -127,6 +132,7 @@ class Collection extends React.Component {
                 aria-haspopup="true" 
                 onClick={this.toggleMenu}
                 >
+                    <img src={this.state.displayPoster}></img>
                     {Parser(this.state.data.collection_name)}
                     {this.state.showCollectionMenu ? (  
                         <Menu
@@ -142,7 +148,7 @@ class Collection extends React.Component {
                             value={"view"}
                             onClick={this.viewCollection}
                         >
-                         View
+                        <p>View</p>
                         </MenuItem> 
                         {this.state.isMyCollection ? (
                             <MenuItem
@@ -150,7 +156,7 @@ class Collection extends React.Component {
                                 value={"delete"}
                                 onClick={this.deleteCollection}    
                             >
-                            Delete
+                            <p>Delete</p>
                             </MenuItem>
                         ) : (
                             <MenuItem
@@ -158,7 +164,7 @@ class Collection extends React.Component {
                                 value={"subscribe"}
                                 onClick={this.subscribeToCollection}    
                             >
-                            Subscribe
+                            <p>Subscribe</p>
                             </MenuItem>
                         )}   
                         </Menu>

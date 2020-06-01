@@ -4,6 +4,7 @@
     height:100%;
     position: fixed;
     font-family: "HollywoodHills";
+    overflow-y: scroll;
 }
 
 
@@ -23,15 +24,16 @@ h2.collectionHeader {
 }
 
 .ProfileInfoWrapper {
-    width: 45%;
+    width: 40%;
     height: 100%;
     float: left;
 }
 
 .SearchWrapper {
-    float: right;
+    float: left;
     width: 55%;
     height: 100%;
+    margin: auto;
 }
 
 .collections {
