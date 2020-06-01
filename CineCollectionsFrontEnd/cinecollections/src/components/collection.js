@@ -24,7 +24,8 @@ class Collection extends React.Component {
             viewCollection: false,
             films: [],
             isMyCollection: false,
-            displayPoster: ""
+            displayPoster: "",
+            updated: false
         };
 
         this.viewCollection = this.viewCollection.bind(this);
@@ -35,14 +36,20 @@ class Collection extends React.Component {
     }
 
     componentDidMount() {
-        this.renderFilms();
-        this.isMyCollection()
+        this.renderFilms(this.state.data);
+        this.isMyCollection();
     }
 
-    renderFilms() {
+    componentDidUpdate(prevProps) {
+        if (this.props.data !== prevProps.data) {
+            this.renderFilms(this.props.data);
+        }
+    }
+
+    renderFilms(data) {
         let films = [];
-        for (let i = 0; i < this.state.data.films.length; i++) {
-            let film = this.state.data.films[i];
+        for (let i = 0; i < data.films.length; i++) {
+            let film = data.films[i];
             let posterURL = URL.createObjectURL(film.poster);
             if (i === 0)  {
                 this.setState({displayPoster: posterURL});
@@ -61,7 +68,6 @@ class Collection extends React.Component {
     
     viewCollection() {
         this.setState({viewCollection: true});
-        console.log(this.state.films)
     }
 
     async deleteCollection() {
@@ -126,53 +132,57 @@ class Collection extends React.Component {
             </Popup>
 
         return (
-        <div className="Collection">
-            <ClickAwayListener onClickAway={this.handleMenuClose}>
-                <Button aria-controls="collectionMenu" 
-                aria-haspopup="true" 
-                onClick={this.toggleMenu}
-                >
-                    <img src={this.state.displayPoster}></img>
-                    {Parser(this.state.data.collection_name)}
-                    {this.state.showCollectionMenu ? (  
-                        <Menu
-                            id="collectionMenu"
-                            anchorEl={this.state.menuAnchor}
-                            keepMounted
-                            open={Boolean(this.state.menuAnchor)}
-                            onClose={this.handleMenuClose}
-                            TransitionComponent={Fade}
-                        > 
-                        <MenuItem
-                            key={"view"}
-                            value={"view"}
-                            onClick={this.viewCollection}
-                        >
-                        <p>View</p>
-                        </MenuItem> 
-                        {this.state.isMyCollection ? (
+            <div className="Collection">
+                <ClickAwayListener onClickAway={this.handleMenuClose}>
+                    <Button aria-controls="collectionMenu" 
+                    aria-haspopup="true" 
+                    onClick={this.toggleMenu}
+                    >
+                        <img className="displayPoster" src={this.state.displayPoster} height="300"/>
+                        <div className="posterText">
+                            <p className="collectionText">
+                                {Parser(this.state.data.collection_name)}
+                            </p>
+                        </div>
+                        {this.state.showCollectionMenu ? (  
+                            <Menu
+                                id="collectionMenu"
+                                anchorEl={this.state.menuAnchor}
+                                keepMounted
+                                open={Boolean(this.state.menuAnchor)}
+                                onClose={this.handleMenuClose}
+                                TransitionComponent={Fade}
+                            > 
                             <MenuItem
-                                key={"delete"}
-                                value={"delete"}
-                                onClick={this.deleteCollection}    
+                                key={"view"}
+                                value={"view"}
+                                onClick={this.viewCollection}
                             >
-                            <p>Delete</p>
-                            </MenuItem>
-                        ) : (
-                            <MenuItem
-                                key={"subscribe"}
-                                value={"subscribe"}
-                                onClick={this.subscribeToCollection}    
-                            >
-                            <p>Subscribe</p>
-                            </MenuItem>
-                        )}   
-                        </Menu>
-                    ) : (null)}
-                </Button>
-            </ClickAwayListener>
-            {collectionView}    
-        </div>);
+                            <p>View</p>
+                            </MenuItem> 
+                            {this.state.isMyCollection ? (
+                                <MenuItem
+                                    key={"delete"}
+                                    value={"delete"}
+                                    onClick={this.deleteCollection}    
+                                >
+                                <p>Delete</p>
+                                </MenuItem>
+                            ) : (
+                                <MenuItem
+                                    key={"subscribe"}
+                                    value={"subscribe"}
+                                    onClick={this.subscribeToCollection}    
+                                >
+                                <p>Subscribe</p>
+                                </MenuItem>
+                            )}   
+                            </Menu>
+                        ) : (null)}
+                    </Button>
+                </ClickAwayListener>
+                {collectionView}    
+            </div>);
     }
 } 
 

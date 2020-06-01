@@ -21,6 +21,7 @@ h2.collectionHeader {
     font-size: 50px;
     font-family: "lemonmilk";
     letter-spacing: 2px;
+    float: left;
 }
 
 .ProfileInfoWrapper {
@@ -38,4 +39,15 @@ h2.collectionHeader {
 
 .collections {
     float: left;
+}
+
+.myCollections {
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.subCollections {
+    float: left;
+    width: 100%;
 }

@@ -39,3 +39,7 @@ input {
 .generalResponse {
     margin-left: 10px;
 }
+
+p.title {
+    font-size: 30px;
+}

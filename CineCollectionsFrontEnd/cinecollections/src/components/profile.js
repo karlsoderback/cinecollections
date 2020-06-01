@@ -103,7 +103,6 @@ class Profile extends React.Component {
                     Creator: {creator}
                 </div>);
         }
-        
         this.setState({renderMyCollections: retMyCollections});
         this.setState({renderSubCollections: retSubCollections});
 

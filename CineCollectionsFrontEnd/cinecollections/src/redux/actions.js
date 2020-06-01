@@ -4,7 +4,9 @@ import {
     FETCHED_COLLECTIONS,
     DISPLAYED_USER, 
     COLLECTIONS_UPDATED, 
-    UPDATE_HANDLED } from "./actionTypes";
+    UPDATE_HANDLED,
+    ADDED_TO_COLLECTION,
+    HANDLED_ADD } from "./actionTypes";
 
 export function loggedIn(data) {
     return {
@@ -44,5 +46,4 @@ export function handledCollectionUpdate() {
         type: UPDATE_HANDLED
     }
 }
-
 

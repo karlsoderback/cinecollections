@@ -1,0 +1,25 @@
+.Collection {
+    position: relative;
+    text-align: center;
+    color: white;
+    float: left;
+    width: 196.883px;
+    height: 300px;
+    margin-left: 10px;
+}
+
+.posterText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.displayPoster{
+    filter: blur(3px);
+}
+
+p.collectionText {
+    font-size: 30px;
+    font-weight: bold;
+}

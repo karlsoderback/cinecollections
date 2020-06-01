@@ -132,7 +132,7 @@ class Search extends React.Component {
                 this.props.dispatch(collectionsUpdated());
             }).catch(error => {
                 this.setState({generalResponse: error});
-        });
+            });
     }
 
     userClick(user){

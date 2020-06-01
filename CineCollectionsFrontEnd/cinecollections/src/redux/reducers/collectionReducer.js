@@ -1,11 +1,16 @@
 import {
-    FETCHED_COLLECTIONS, COLLECTIONS_UPDATED, UPDATE_HANDLED
+    FETCHED_COLLECTIONS, 
+    COLLECTIONS_UPDATED, 
+    UPDATE_HANDLED, 
+    ADDED_TO_COLLECTION,
+    HANDLED_ADD
 } from "../actionTypes";
 
 const initialState = {
     myCollections: [],
     subCollections: [],
-    collectionsUpdated: false
+    collectionsUpdated: false,
+    addedToCollection: false
 }
 
 export default function updateCollectionState(state = initialState, action) {
