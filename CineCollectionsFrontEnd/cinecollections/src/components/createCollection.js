@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./css/general.css";
+import "./css/createCollection.css";
 
 import { connect } from "react-redux";
 
@@ -36,22 +37,25 @@ class CreateCollection extends React.Component {
         let create;
         if(this.props.loggedInUser === this.props.displayUser) {
             create = 
+            <div className="createPopup">
                 <Popup trigger={
                     <Button>
-                    Create New Collection
+                    <p>Create New Collection</p>
                     </Button>
                 }
                 position="right center">
                     <div>
-                        {this.state.response}
-                        <input 
+                        <input
+                            className="create" 
                             type="text" 
                             value ={this.state.collectionName} 
                             onChange={e => this.setState({collectionName: e.target.value})} 
-                        />
-                        <Button onClick={this.create}>Create</Button>
+                            />
+                        <Button onClick={this.create}><p>Create</p></Button>
                     </div>
+                    <p>{this.state.response}</p>
                 </Popup>
+            </div>
         } else {
             create = (null);
         }
