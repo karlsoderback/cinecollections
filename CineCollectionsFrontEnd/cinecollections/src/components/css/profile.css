@@ -6,11 +6,6 @@
     font-family: "HollywoodHills";
 }
 
-.ProfileInfoWrapper {
-    width: 50%;
-    height: 100%;
-    float: left;
-}
 
 h1.profileName {
     text-align: left;
@@ -23,13 +18,19 @@ h2.collectionHeader {
     text-align: left;
     color: #ec4d37;
     font-size: 50px;
-    font-family: "basketball";
+    font-family: "lemonmilk";
     letter-spacing: 2px;
+}
+
+.ProfileInfoWrapper {
+    width: 45%;
+    height: 100%;
+    float: left;
 }
 
 .SearchWrapper {
     float: right;
-    width: 50%;
+    width: 55%;
     height: 100%;
 }
 

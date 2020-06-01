@@ -156,17 +156,17 @@ class Profile extends React.Component {
             <div className="Profile">
                 <div className="ProfileInfoWrapper">
                     <div className="ProfileHeader">
-                        <h1 class="profileName">{this.props.displayUser}</h1>
-                        <Button onClick={this.logOut}><p class="buttontext">Log out</p></Button>
-                        <Button onClick={this.home}><p class="buttontext">Home</p></Button>
+                        <h1 className="profileName">{this.props.displayUser}</h1>
+                        <Button onClick={this.logOut}><p className="buttontext">Log out</p></Button>
+                        <Button onClick={this.home}><p className="buttontext">Home</p></Button>
                         <CreateCollection />
                     </div>
                     <div className="collections">
-                        <h2 class="collectionHeader">My Collections</h2>
+                        <h2 className="collectionHeader">My Collections</h2>
                         <div className="myCollections">
                             {this.state.renderMyCollections}
                         </div>
-                        <h2 class="collectionHeader">Subscribed Collections</h2>
+                        <h2 className="collectionHeader">Subscribed Collections</h2>
                         <div className="subCollections">
                             {this.state.renderSubCollections}
                         </div>
