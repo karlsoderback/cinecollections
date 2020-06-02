@@ -18,7 +18,8 @@ class Startscreen extends React.Component {
             loginUsername: "",
             loginPassword: "",
             registerUsername: "",
-            registerPassword: "",  
+            registerPassword: "",
+            registerPassword2: "",
             response: "",
         };
 
@@ -59,20 +60,24 @@ class Startscreen extends React.Component {
             "username": this.state.registerUsername,
             "password": this.state.registerPassword
         }
-        sendBackendPOST("user/new", body).then(
-            data => {
-                this.setState({response: ""});
-                this.createNewSession(body);
-            }).catch(error => {
-                {this.setState({response: error.message})};
-            });
+        if (this.state.registerPassword === this.state.registerPassword2) {
+            sendBackendPOST("user/new", body).then(
+                data => {
+                    this.setState({response: ""});
+                    this.createNewSession(body);
+                }).catch(error => {
+                    {this.setState({response: error.message})};
+                });
+        } else {
+            this.setState({response: "Passwords don't match"});
+        }
         event.preventDefault();
     }
 
     render(){
         return (
             <div className="Startscreen">
-                <h1 class="title">CineCollections</h1>
+                <h1 className="title">CineCollections</h1>
                 <div className="Forms">
                     <div className="Login">
                         <form className="loginForm" onSubmit={this.loginSubmit}>
@@ -99,13 +104,13 @@ class Startscreen extends React.Component {
                             type="submit"
                             variant="custom"
                             >
-                            <p class="formbutton">Login</p>
+                            <p className="formbutton">Login</p>
                             </Button>
                         </form>
                     </div>
                     <div className="Register">
                         <form className="registerForm" onSubmit={this.registerSubmit}>
-                            <FormGroup controlId="registerUsername" bssize="large">
+                                <FormGroup controlId="registerUsername" bssize="large">
                                     <FormControl 
                                         autoFocus
                                         type="text"
@@ -122,13 +127,21 @@ class Startscreen extends React.Component {
                                         onChange={e => this.setState({registerPassword: e.target.value})}
                                     />
                                 </FormGroup>
+                                <FormGroup controlId="registerPassword2" bssize="large">
+                                    <FormControl 
+                                        type="password"
+                                        placeholder="Password"
+                                        value={this.state.registerPassword2}
+                                        onChange={e => this.setState({registerPassword2: e.target.value})}
+                                    />
+                                </FormGroup>
                                 <Button 
                                 block bssize="large" 
                                 disabled={!this.validateForm(this.state.registerUsername, this.state.registerPassword)} 
                                 type="submit"
                                 variant="custom"
                                 >
-                                <p class="formbutton">Register</p>
+                                <p className="formbutton">Register</p>
                                 </Button>
                         </form>
                     </div>
