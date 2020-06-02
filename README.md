@@ -16,5 +16,13 @@ The front-end will be made using React. The reason I am choosing React is becaus
 
 # Mid Course Screencast
 
-Available: https://www.youtube.com/watch?v=rqZLws9-ADI
+Available: https://youtu.be/rqZLws9-ADI
+
+# Project Screencast
+
+Available: https://youtu.be/FtOxxKJmKGQ
+
+#Individual Oral Code Screencast
+
+Available: https://youtu.be/3ESh34Kj1GE
 
