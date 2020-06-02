@@ -1,3 +1,9 @@
 input.create {
     width: 185px;
 }
+
+.viewPopup-content {
+    background: #262223;
+    border: #262223;
+    width: 200px;
+}

@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 
 import Button from "./button";
 import Popup from "reactjs-popup";
+import { ClickAwayListener } from "@material-ui/core"
 
 import { sendAuthorizedBackendGET } from "../rest/backendAPI";
 
@@ -20,7 +21,7 @@ class CreateCollection extends React.Component {
             response: ""
         }
 
-        this.create = this.create.bind(this);
+        this.create = this.create.bind(this);  
     }
 
     create() { // TODO - validate input not empty
@@ -38,11 +39,16 @@ class CreateCollection extends React.Component {
         if(this.props.loggedInUser === this.props.displayUser) {
             create = 
             <div className="createPopup">
-                <Popup trigger={
+                <Popup
+                trigger ={
                     <Button>
-                    <p>Create New Collection</p>
+                        <p>Create New Collection</p>
                     </Button>
                 }
+                className="createPopup" 
+                position="right center"
+                closeOnEscape
+                onClose={this.handleClose}
                 position="right center">
                     <div>
                         <input
@@ -59,6 +65,7 @@ class CreateCollection extends React.Component {
         } else {
             create = (null);
         }
+
         return (
             <div>
                 {create}
